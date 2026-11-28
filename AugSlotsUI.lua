@@ -50,6 +50,23 @@ local function setOf(z) local key = Config.Sets.ZoneKeys[z] return key and Confi
 local function attr(name) return player:GetAttribute(name) end
 local function atTown() return attr("Zone") == "Lobby" or attr("TutorialActive") == true end
 local function plusFive(z) return isDefense(z) and "effect value +20%" or "10% chance to fire again" end
+-- 🔫 어울리는 무기 (Config.AugRoles): 지금 무기가 맞으면 초록 "✔ 🔫 이름 +40%", 아니면 "🔫 어울리는 무기: A / B"
+local function weaponText(z)
+	local attrName = Config.Sets.ZoneAug[z] or ""
+	local role = Config.AugRoles and Config.AugRoles[attrName]
+	if not role or not role.Weapons then return nil, false end
+	local names = {}
+	for _, key in ipairs(role.Weapons) do
+		local w = Config.WeaponTypes[key]
+		table.insert(names, "<font>" .. (w and w.Name or key) .. "</font>") -- (이름마다 따로 감싸야 각각 번역된다)
+	end
+	local match = Config.AugWeaponMatch(player, attrName) == true
+	local bonus = math.floor(((Config.AugWeaponBonus or 1.4) - 1) * 100 + 0.5)
+	if match then
+		return "<font color='#78ff8c'>✔ 🔫 </font>" .. table.concat(names, " / ") .. string.format("<font color='#78ff8c'> +%d%%</font>", bonus), true
+	end
+	return "<font color='#ffcf8a'>🔫 Best with </font>" .. table.concat(names, " / ") .. string.format("<font color='#9a8ab8'> (+%d%%)</font>", bonus), false
+end
 local function tenText(z) return Config.AugSlotTen[Config.Sets.ZoneAug[z] or ""] or "bonus effect" end
 
 -- 동그란 보석 (소켓 / 후보 공용): 바깥 금테 + 안쪽 색 + 가운데 아이콘
@@ -100,6 +117,9 @@ function UI.Build(panel)
 		local ring, ringStroke, ringIcon = orb(holder, RING, { Position = UDim2.new(0.5, -RING / 2, 0, 0) })
 		local plus = badge(holder, { Size = UDim2.new(0, 46, 0, 26), Position = UDim2.new(0.5, RING / 2 - 34, 0, -4), Text = "+0", TextSize = 16, Font = Enum.Font.GothamBlack,
 			TextColor3 = Color3.fromRGB(58, 32, 0), BackgroundColor3 = GOLD_HI, Stroke = Color3.fromRGB(255, 243, 192), ZIndex = 8 })
+		local gunBadge = badge(holder, { Size = UDim2.new(0, 30, 0, 22), Position = UDim2.new(0.5, -RING / 2 - 2, 0, RING - 30), Text = "🔫", TextSize = 13, -- (지금 무기가 이 효과와 어울리면 초록)
+			TextColor3 = Color3.new(1, 1, 1), BackgroundColor3 = Color3.fromRGB(46, 150, 80), Stroke = Color3.fromRGB(120, 255, 140), ZIndex = 8 })
+		gunBadge.Visible = false
 		local lv = badge(holder, { Size = UDim2.new(0, 76, 0, 22), Position = UDim2.new(0.5, -38, 0, RING - 12), Text = "", TextSize = 12, Font = Enum.Font.GothamBlack,
 			TextColor3 = CREAM, BackgroundColor3 = Color3.fromRGB(18, 14, 24), ZIndex = 8 })
 		local pips = text({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, RING + 16), Text = "", TextSize = 13 }, holder)
@@ -138,7 +158,7 @@ function UI.Build(panel)
 		round(clear)
 		make("UIStroke", { Color = Color3.fromRGB(255, 154, 168), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, clear)
 		clear.Activated:Connect(function() Remotes.Aug:FireServer("Slot", i, 0) end)
-		sockets[i] = { Ring = ring, Stroke = ringStroke, Icon = ringIcon, Glow = glow, Plus = plus, Lv = lv, Pips = pips, Name = name, Src = src, Goal = goal, Target = target, TargetStroke = targetStroke, Tag = tag, Up = up, UpStroke = upStroke, Clear = clear }
+		sockets[i] = { Ring = ring, Stroke = ringStroke, Icon = ringIcon, Glow = glow, Plus = plus, Lv = lv, Pips = pips, Name = name, Src = src, Goal = goal, Gun = gunBadge, Target = target, TargetStroke = targetStroke, Tag = tag, Up = up, UpStroke = upStroke, Clear = clear }
 	end
 
 	-- 설명 줄: 고른 소켓(또는 미리 보는 보석)의 효과 설명 + 👑 각성 설명
@@ -265,7 +285,10 @@ function UI.Build(panel)
 			local aw = attr("AugAwakeZ_" .. z) == true and Config.AugAwaken[Config.Sets.ZoneAug[z]]
 			infoIcon.Text = zi.Icon
 			infoLine1.Text = string.format("<b>%s</b>  <font color='#d8cce8'>%s</font>", zi.Name, zi.Desc or "")
-			if aw then
+			local wtext = not isDefense(z) and weaponText(z)
+			if wtext then -- 공격 효과: 어울리는 무기를 맨 앞에 (예전 창의 "무기 궁합" 띠)
+				infoLine2.Text = wtext .. (aw and ("  <font color='#ff9be6'>" .. string.format("👑 Awakening: %s", aw.Name) .. "</font>") or (level <= 0 and "  <font color='#9a8ab8'>· tap it, then a slot</font>" or ""))
+			elseif aw then
 				infoLine2.Text = "<font color='#ff9be6'>" .. string.format("👑 Awakening: %s", aw.Name) .. "</font>  " .. aw.Desc
 			elseif level <= 0 then
 				infoLine2.Text = isDefense(z) and "Collect Guard Stones" or "Tap it, then a slot: this set's gear goes on and it goes in"
@@ -366,12 +389,15 @@ function UI.Build(panel)
 			s.Pips.Text = table.concat(p, " ")
 			if not info then
 				s.Lv.Visible = false
+				s.Gun.Visible = false
 				s.Name.Text = "<font color='#9a8ab8'>Empty slot</font>"
 				s.Src.Text = "Pick one below"
 				s.Goal.Text = ""
 			else
 				local level = attr("AugGearZ_" .. z) or 0
 				s.Lv.Visible = true
+				local _, gunMatch = weaponText(z)
+				s.Gun.Visible = not def and gunMatch
 				s.Lv.Text = string.format("Lv.%d", level) .. (attr("AugAwakeZ_" .. z) == true and " 👑" or (not def and level >= 4 and " ★" or ""))
 				s.Name.Text = info.Name
 				if def then
@@ -442,7 +468,7 @@ function UI.Build(panel)
 		UI.Refresh()
 	end
 
-	local watch = { "Gold", "TutorialActive", "Zone", "GuardStones" }
+	local watch = { "Gold", "TutorialActive", "Zone", "GuardStones", "WeaponType", "WeaponLevel" } -- (무기를 바꾸면 🔫 표시도)
 	for i = 1, S.Count do
 		table.insert(watch, "AugSlotZ_" .. i) table.insert(watch, "AugSlotLv_" .. i) table.insert(watch, "AugSlotEff_" .. i)
 	end

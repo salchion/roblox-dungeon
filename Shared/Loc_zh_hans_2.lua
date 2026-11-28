@@ -984,6 +984,8 @@ return {
 		["Defense max 2"] = "防御最多2个",
 		["Not in the dungeon"] = "地下城中不可",
 		["Put here"] = "放这里",
+		["Best with"] = "最适合",
+		["· tap it, then a slot"] = "· 点击后选择槽位",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1172,6 +1174,5 @@ return {
 		{ "🌟 Set-effect gear equipped: {number1} slot(s) swapped", "🌟 已按套装效果换装：更换 {number1} 个部位" },
 		{ "Enemies swarm in more often\nGold +{number1}% instead", "敌人出现频率更高\n黄金 +{number1}%" },
 		{ "🧹 Auto-cleaned {number1} weaker gear (Essence +{number2}, {number3} G)", "🧹 已自动清理 {number1} 件较弱装备(精华 +{number2},{number3} 金币)" },
-		{ "🎯 Bounty complete! +{number1} G · 🎫 +{number2} · gear dropped", "🎯 悬赏完成！+{number1} G · 🎫 +{number2} · 掉落装备" },
 	},
 }

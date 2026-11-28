@@ -1050,6 +1050,8 @@ return {
 		["Defense max 2"] = "Verteidigung max. 2",
 		["Not in the dungeon"] = "Nicht im Dungeon",
 		["Put here"] = "Hier einsetzen",
+		["Best with"] = "Am besten mit",
+		["· tap it, then a slot"] = "· antippen, dann Slot",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1136,6 +1138,5 @@ return {
 		{ "each hit adds a burn stack (max {number1}, lasts 4s); every 0.5s per stack", "Jeder Treffer fügt einen Brandstapel hinzu (max. {number1}, hält 4 s); alle 0,5 s pro Stapel" },
 		{ "Aug_Synergy  <font color='#{number1}aa{number2}c{number3}'>Augment synergy triggered</font>", "Aug_Synergie <font color='#{number1}aa{number2}c{number3}'>Synergie aktiviert</font>" },
 		{ "✅ Railgun equipped! (Bounces to {number1} nearby enemies · Longest range)", "✅ Schienenwaffe ausgerüstet! (Prallt auf {number1} nahe Gegner · Größte Reichweite)" },
-		{ "{number1} hours of idle gold ({number2} G) piled up!\n(Idle income bonus +{number3}% active)", "{number1} Stunden ungenutztes Gold ({number2} G) gesammelt!\n(Inaktiver Einkommensbonus +{number3}% aktiv)" },
 	},
 }

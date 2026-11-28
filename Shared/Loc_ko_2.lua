@@ -1369,6 +1369,8 @@ return {
 		["Defense max 2"] = "방어 2칸 제한",
 		["Not in the dungeon"] = "던전에서는 안 돼요",
 		["Put here"] = "여기에 넣기",
+		["Best with"] = "잘 맞는 무기",
+		["· tap it, then a slot"] = "· 누르고 칸 고르기",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1384,6 +1386,5 @@ return {
 		{ "Double Shot: each time you shoot, there's a chance the same shot fires again {number1}s later (same power). With the max {number2} points, about {number3}%.", "더블 샷: 발사할 때마다 {number1}초 후에 동일한 샷이 다시 발사될 확률이 있습니다(동일한 힘). 최대 {number2} 포인트 시 약 {number3}%입니다." },
 		{ "🌟 A golden FEVER portal opened next to the fallen Colossus! Grab your loot, then press E at the portal within {number1} seconds!", "🌟 쓰러진 거신 옆에 황금 피버 포탈이 열렸어요! 전리품을 줍고 {number1}초 안에 포탈에서 E를 누르세요!" },
 		{ "🔒 Zone {number1} · Wasteland Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏚 Will of the Ruins set!", "🔒 구역 {number1} · 황무지 봉쇄됨\n구역 {number2} 몬스터 {number3} / {number4} 처치 · 군주 👑 미처치\n오픈하여 🏚 폐허의 의지 세트를 획득하세요!" },
-		{ "Legendary Blacksmith   Title 『Legendary Blacksmith』\nUpgrade all the way to the last weapon (level {number1})\n{number2} / {number3}   Reward: 🎫 {number4}", "전설의 대장장이 타이틀 『전설의 대장장이』\n마지막 무기(레벨 {number1})까지 모두 업그레이드하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 	},
 }

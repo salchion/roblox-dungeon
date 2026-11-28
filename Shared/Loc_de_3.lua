@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} hours of idle gold ({number2} G) piled up!\n(Idle income bonus +{number3}% active)", "{number1} Stunden ungenutztes Gold ({number2} G) gesammelt!\n(Inaktiver Einkommensbonus +{number3}% aktiv)" },
 		{ "Weapons reached {number1} / {number2}  ·  Enhance your weapon to meet the next one", "Erreichte Waffen {number1} / {number2}  ·  Verbessere deine Waffe, um die nächste zu treffen" },
 		{ "Set you're wearing Lv.{number1} · {number2} pieces = Lv.{number3}, Guard Stones for defense", "Getragenes Set Lv.{number1} · {number2} Teile = Lv.{number3}, Verteidigung mit Schutzsteinen" },
 		{ "👑 Kill goal reached! Defeat the Lord of Zone {number1} to open the gate!", "👑 Kill-Ziel erreicht! Besiege den Lord von Zone {number1}, um das Tor zu öffnen!" },

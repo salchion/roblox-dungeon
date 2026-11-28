@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Legendary Blacksmith   Title 『Legendary Blacksmith』\nUpgrade all the way to the last weapon (level {number1})\n{number2} / {number3}   Reward: 🎫 {number4}", "전설의 대장장이 타이틀 『전설의 대장장이』\n마지막 무기(레벨 {number1})까지 모두 업그레이드하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "🔒 Zone {number1} · Desert Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏜 Desert Sun set!", "🔒 구역 {number1} · 사막 봉쇄됨\n구역 {number2} 몬스터 {number3} / {number4} 처치 · 군주 👑 미처치\n열고 사막 태양 세트를 획득하세요!" },
 		{ "💰 Not enough Gold. ({number1} needed) Earn Gold at the Training Dummy / field hunting / dungeons / Boss Rush rewards", "💰 골드가 부족해요. ({number1} 필요) 훈련 허수아비 / 필드 사냥 / 던전 / 보스 러시 보상으로 골드를 얻으세요" },
 		{ "Legend Wielder   Title 『Legend Wielder』\nReach weapon upgrade level {number1} (about the {number2}th weapon)\n{number3} / {number4}   Reward: 🎫 {number5}", "전설의 보유자 타이틀 『전설의 보유자』\n무기 업그레이드 레벨 {number1} 달성 ({number2}번째 무기)\n{number3} / {number4}   보상: 🎫 {number5}" },
@@ -930,8 +931,5 @@ return {
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} 자동 분해 (정수 +{number2}, {number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ 일일 퀘스트 완료! 보상: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 {number1}구역 {number2}구간 — 이곳에는 {text3}이(가) 많아요" },
-		{ "Lord of {text1} (Zone {number2}) · ⏱ ~{number3}s · 💥 {number4}% HP", "{text1}의 군주 ({number2}구역) · ⏱ ~{number3}초 · 💥 체력 {number4}%" },
-		{ "🌟 This Fever portal belongs to {text1}.", "🌟 이 피버 포탈은 {text1}님의 것이에요." },
-		{ "Need {number1} {text2} items to fuse (you have {number3})", "합성하려면 {text2} 장비 {number1}개가 필요해요 (보유 {number3})" },
 	},
 }
