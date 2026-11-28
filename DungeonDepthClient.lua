@@ -279,7 +279,7 @@ end)
 local function paintPref()
 	local z = player:GetAttribute("AugPrefSet") or 0
 	local def = z > 0 and Config.Sets[Config.Sets.ZoneKeys[z]]
-	prefButton.Text = def and string.format("🎯 Preferred set: %s %s (%d%%) ▸", def.Icon or "★", def.Name, math.floor(Config.Sets.DungeonPrefChance * 100 + 0.5)) or "🎯 Preferred set: none (random) ▸"
+	prefButton.Text = def and string.format("🎯 Preferred set: %s %s (%d%%) ▶", def.Icon or "★", def.Name, math.floor(Config.Sets.DungeonPrefChance * 100 + 0.5)) or "🎯 Preferred set: none (random) ▶"
 end
 player:GetAttributeChangedSignal("AugPrefSet"):Connect(paintPref)
 paintPref()

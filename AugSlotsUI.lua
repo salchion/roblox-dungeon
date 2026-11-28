@@ -1,5 +1,5 @@
 -- AugSlotsUI (StarterPlayer > StarterPlayerScripts 안의 ModuleScript, 이름: AugSlotsUI)
--- 🌟 세트 효과 창(Y) 안쪽 (11-26 목업 slots5 "게임 느낌"): 빛나는 원형 소켓 3개 + 소켓 아래 강화 보석 줄(◆ 10개, +5 / +10 은 ✦) + 둥근 강화 버튼
+-- 🌟 세트 효과 창(Y) 안쪽 (11-26 목업 slots5 "게임 느낌"): 빛나는 원형 소켓 3개 + 소켓 아래 강화 보석 줄(● 10개, +5 / +10 은 ★) + 둥근 강화 버튼
 --   아래 = 넣을 수 있는 효과를 동그란 보석으로 (⚔ 공격 줄 / 🛡 방어 줄, 탭 없음). 이미 칸에 든 효과는 목록에서 뺀다. 잠긴 효과는 작은 흑백 아이콘 한 줄.
 --   AugClient 가 만든 panel 에 그린다: require(...).Build(panel) -> { Refresh, Focus }
 --   값은 서버(AugService)가 채우는 Attribute 만 읽고, 바꾸는 것은 Remotes.Aug "Slot" / "SlotUp" / "Stone" 으로 보낸다.
@@ -68,7 +68,7 @@ local function badge(parent, props)
 	local b = text(props, parent)
 	b.BackgroundTransparency = 0
 	round(b, 9)
-	make("UIStroke", { Color = strokeColor or GOLD, Thickness = 1.5 }, b)
+	make("UIStroke", { Color = strokeColor or GOLD, Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, b) -- (Border: 글자 칸의 UIStroke 기본값은 글자 테두리라 금색이 글자를 뭉개고 있었다)
 	return b
 end
 
@@ -80,7 +80,7 @@ function UI.Build(panel)
 	local resLabel = badge(panel, { Size = UDim2.new(0, 210, 0, 26), Position = UDim2.new(0, 196, 0, 14), Text = "", TextSize = 13, TextColor3 = Color3.fromRGB(143, 224, 255), BackgroundColor3 = Color3.fromRGB(16, 12, 22), Stroke = Color3.fromRGB(70, 60, 90) })
 	local close = make("TextButton", { Size = UDim2.new(0, 76, 0, 32), Position = UDim2.new(1, -92, 0, 12), BackgroundColor3 = Color3.fromRGB(58, 42, 18), Text = "Close", TextSize = 13, Font = Enum.Font.GothamBold, TextColor3 = CREAM, ZIndex = 6 }, panel)
 	round(close, 12)
-	make("UIStroke", { Color = GOLD, Thickness = 2 }, close)
+	make("UIStroke", { Color = GOLD, Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, close)
 	close.Activated:Connect(function() panel.Visible = false end)
 	text({ Size = UDim2.new(1, -40, 0, 16), Position = UDim2.new(0, 20, 0, 46), Text = "Only effects in a slot are on · pick a slot, then tap a gem below", TextSize = 12, TextColor3 = Color3.fromRGB(201, 184, 138) }, panel)
 
@@ -104,14 +104,14 @@ function UI.Build(panel)
 		local up = make("TextButton", { Size = UDim2.new(0, 160, 0, 32), Position = UDim2.new(0.5, -80, 0, RING + 96), BackgroundColor3 = Color3.fromRGB(70, 180, 82), Text = "", TextSize = 13,
 			Font = Enum.Font.GothamBlack, TextColor3 = Color3.new(1, 1, 1), ZIndex = 7 }, holder)
 		round(up, 16)
-		local upStroke = make("UIStroke", { Color = Color3.fromRGB(184, 255, 191), Thickness = 2 }, up)
+		local upStroke = make("UIStroke", { Color = Color3.fromRGB(184, 255, 191), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, up)
 		up.Activated:Connect(function() Remotes.Aug:FireServer("SlotUp", i) end)
 		local pick = make("TextButton", { Size = UDim2.new(0, RING, 0, RING), Position = UDim2.new(0.5, -RING / 2, 0, 0), BackgroundTransparency = 1, Text = "", ZIndex = 7 }, holder)
 		pick.Activated:Connect(function() selectedSlot = i preview = nil UI.Refresh() end)
 		local clear = make("TextButton", { Size = UDim2.new(0, 26, 0, 26), Position = UDim2.new(0.5, -RING / 2 - 4, 0, -2), BackgroundColor3 = Color3.fromRGB(122, 32, 48), Text = "✕", TextSize = 12,
 			Font = Enum.Font.GothamBlack, TextColor3 = Color3.new(1, 1, 1), ZIndex = 9 }, holder)
 		round(clear)
-		make("UIStroke", { Color = Color3.fromRGB(255, 154, 168), Thickness = 2 }, clear)
+		make("UIStroke", { Color = Color3.fromRGB(255, 154, 168), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, clear)
 		clear.Activated:Connect(function() Remotes.Aug:FireServer("Slot", i, 0) end)
 		sockets[i] = { Ring = ring, Stroke = ringStroke, Icon = ringIcon, Glow = glow, Plus = plus, Lv = lv, Pips = pips, Name = name, Src = src, Goal = goal, Up = up, UpStroke = upStroke, Clear = clear }
 	end
@@ -196,7 +196,7 @@ function UI.Build(panel)
 				local sb = make("TextButton", { Size = UDim2.new(0, 36, 0, 18), Position = UDim2.new(0.5, 8, 0, -4), BackgroundColor3 = ready and Color3.fromRGB(47, 91, 214) or Color3.fromRGB(70, 66, 86),
 					Text = "🔷" .. need, TextSize = 10, Font = Enum.Font.GothamBlack, TextColor3 = Color3.new(1, 1, 1), ZIndex = 9 }, cell)
 				round(sb, 9)
-				make("UIStroke", { Color = Color3.fromRGB(159, 192, 255), Thickness = 1.5 }, sb)
+				make("UIStroke", { Color = Color3.fromRGB(159, 192, 255), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, sb)
 				sb.Activated:Connect(function() Remotes.Aug:FireServer("Stone", z) end)
 			end
 		end
@@ -254,10 +254,10 @@ function UI.Build(panel)
 			s.Glow.BackgroundTransparency = sel and 0.45 or 0.75
 			s.Icon.Text = info and info.Icon or "＋"
 			s.Icon.TextTransparency = info and 0 or 0.5
-			-- 강화 보석 줄: ◆ x10, +5 / +10 자리는 ✦
+			-- 강화 보석 줄: ● x10, +5 / +10 자리는 ★ (✦ / ◆ 는 게임 글꼴에 없어 네모 / 작은 점으로 나왔다)
 			local p = {}
 			for k = 1, S.MaxLevel do
-				local mark = (k == 5 or k == 10) and "<font size='17'>✦</font>" or "◆"
+				local mark = (k == 5 or k == 10) and "<font size='17'>★</font>" or "●"
 				table.insert(p, string.format("<font color='%s'>%s</font>", k <= lv and "#ffd966" or "#4a4060", mark))
 			end
 			s.Pips.Text = table.concat(p, " ")
@@ -276,13 +276,13 @@ function UI.Build(panel)
 					s.Src.Text = string.format("🔷 Guard Stone %d/6", attr("AugStoneZ_" .. z) or 0) .. (eff < 1 and string.format(" · <font color='#ffb84d'>2nd defense = %d%%</font>", math.floor(eff * 100 + 0.5)) or "")
 				else
 					local setDef = setOf(z)
-					s.Src.Text = string.format("%s %s <font color='#78ff8c'>%d/6</font>", setDef and setDef.Icon or "", setDef and setDef.Name or "", attr("AugSetZ_" .. z) or 0)
+					s.Src.Text = string.format("%s <font color='#d8cce8'>%s</font> <font color='#78ff8c'>%d/6</font>", setDef and setDef.Icon or "", setDef and setDef.Name or "", attr("AugSetZ_" .. z) or 0) -- (세트 이름은 따로 감싸야 통째로 번역된다: "사막 Sun" 처럼 반만 번역됐다)
 				end
 				if lv >= 10 then
-					s.Goal.Text = "<font color='#78ff8c'>✔ +10 " .. tenText(z) .. "</font>"
+					s.Goal.Text = "<font color='#78ff8c'>✔ +10 </font><font color='#78ff8c'>" .. tenText(z) .. "</font>"
 				else
 					local g = lv < 5 and 5 or 10
-					s.Goal.Text = string.format("🎯 +%d %s · %d left", g, g == 5 and plusFive(z) or tenText(z), g - lv)
+					s.Goal.Text = string.format("🎯 +%d <font color='#ffe9a8'>%s</font> · %d left", g, g == 5 and plusFive(z) or tenText(z), g - lv) -- (효과 문구를 따로 감싸야 번역된다)
 				end
 			end
 			local cost = S.Cost[lv + 1]
