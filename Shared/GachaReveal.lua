@@ -95,7 +95,7 @@ function M.Init(deps)
 			Name = "GachaReveal", Size = UDim2.new(1, 0, 1, 0), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 1,
 			Text = "", AutoButtonColor = false, ZIndex = 60,
 		}, layer)
-		do -- (11-30 UI 겹침) 결과 화면이 떠 있는 동안 뒤의 큰 창(메뉴 / 뽑기 창 등 400x300 이상)은 잠깐 숨겼다가, 결과 화면이 닫히면 그대로 되살린다
+		do -- (11-28 UI 겹침) 결과 화면이 떠 있는 동안 뒤의 큰 창(메뉴 / 뽑기 창 등 400x300 이상)은 잠깐 숨겼다가, 결과 화면이 닫히면 그대로 되살린다
 			local hidden = {}
 			for _, child in ipairs(gui:GetChildren()) do
 				if child:IsA("GuiObject") and child.Visible and child.AbsoluteSize.X >= 400 and child.AbsoluteSize.Y >= 300 then

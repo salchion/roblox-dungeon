@@ -80,7 +80,7 @@ local function show(data)
 	local lines = 2 + #(data.Affixes or {}) + (data.Unique and 1 or 0) + (data.Set and 1 or 0) + (data.AugBoost and 1 or 0) + 1
 	local height = 64 + lines * 22
 	-- 아래 끝 위치. 대미지 미터(DpsPanelGui)가 떠 있으면 카드 위쪽이 미터 아래 끝보다 내려오게 (11-18 UI 겹침: 미터 아래 12px 를 덮었다)
-	--   (11-30) 카드가 떠 있는 동안 미터가 줄을 늘려 길어져도 다시 잰다: 나중에 길어진 미터와 12px 겹쳤다
+	--   (11-28) 카드가 떠 있는 동안 미터가 줄을 늘려 길어져도 다시 잰다: 나중에 길어진 미터와 12px 겹쳤다
 	local pg = player:FindFirstChild("PlayerGui")
 	local dps = pg and pg:FindFirstChild("DpsPanelGui")
 	local meter = dps and dps:FindFirstChild("DamageMeter")

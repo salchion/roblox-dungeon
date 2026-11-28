@@ -208,7 +208,7 @@ function UI.Build(panel)
 		text({ Size = UDim2.new(1, 10, 0, 12), Position = UDim2.new(0, -5, 0, 75), Text = sub, TextSize = 9, TextColor3 = MUTED, TextTruncate = Enum.TextTruncate.AtEnd }, cell)
 		local hit = make("TextButton", { Size = UDim2.new(0, 52, 0, 52), Position = UDim2.new(0.5, -26, 0, 2), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, cell)
 		gemStrokes[z] = { Stroke = stroke, Base = stroke.Color }
-		hit.Activated:Connect(function() -- (11-30 B안) 보석 = 고르기만 (아무것도 안 보낸다) → 위 소켓을 눌러 칸 확정. 같은 보석을 다시 누르면 취소
+		hit.Activated:Connect(function() -- (11-28 B안) 보석 = 고르기만 (아무것도 안 보낸다) → 위 소켓을 눌러 칸 확정. 같은 보석을 다시 누르면 취소
 			preview = z
 			if picked == z then
 				picked = nil
