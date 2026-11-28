@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Rare] 🌾 Meadow Leather Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [Raro] 🌾 Luvas de Couro do Prado são recuperadas automaticamente (Essência +{number1} {number2} G)" },
+		{ "♻ [Common] 🌾 Meadow Cloth Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] 🌾 Luvas de tecido de campo recuperadas automaticamente (Essência +{number1} {number2} G)" },
+		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "Título de Poderoso\nAlcance {number1} de Poder\n{number2} / {number3} Recompensa: {number4} G" },
+		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] 🌲 Chapéu de Couro da Floresta recuperado automaticamente (Essência +{number1} {number2} G)" },
+		{ "The final blast also explodes around every target (attack x{number1})", "A explosão final também detona ao redor de cada alvo (ataque x{number1})" },
 		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Comum] 🌾 Sapatos desgastados do prado são salvos automaticamente (Essência +{number1} {number2} G)" },
 		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 Avanço do nível {number1} concluído! Agora você pode crescer ainda mais." },
 		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 Baú do chefe da masmorra — {number1} peças de equipamento, +1 a cada {number2} de profundidade (máx. {number3})" },

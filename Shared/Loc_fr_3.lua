@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎟 {number1} free entries today · 🗝 {number2} keys!\nChallenge the dungeon at the north gate", "🎟 {number1} entrées gratuites aujourd'hui · 🗝 {number2} clés !\nDéfiez le donjon à la porte du nord" },
+		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "Effets uniques trouvés {number1} / {number2}  ·  L'équipement mythique peut en porter un (environ {number3} % de chance)" },
+		{ "🎒 Bag full: dismantled {number1} gear that your other gear beats (Essence +{number2}, {number3} G)", "🎒 Sac plein : {number1} équipement(s) moins bon(s) recyclé(s) (Essence +{number2}, {number3} G)" },
+		{ "Skill Master   Title 『Skill Master』\nUse skills {number1} times\n{number2} / {number3}   Reward: 🎫 {number4}", "Titre de maître des compétences\nUtiliser les compétences {number1} fois\n{number2} / {number3} Récompense : 🎫 {number4}" },
 		{ "(your record: depth {number1} · the dungeon theme is random, odds are the same)", "(votre record : profondeur {number1} · le thème du donjon est aléatoire, les probabilités sont les mêmes)" },
 		{ "Each depth up: monster HP +{number1}% · damage +{number2}% · gold +{number3}% · better chest odds", "Par profondeur : PV des monstres +{number1} % · dégâts +{number2} % · or +{number3} % · meilleures chances de coffre" },
 		{ "Cleared up to depth {number1}  ·  Pick any depth to match your power  (next: {number2})", "Profondeur {number1} terminée  ·  Choisissez la profondeur qui vous convient  (prochaine : {number2})" },

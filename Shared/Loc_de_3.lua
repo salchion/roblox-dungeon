@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Gewöhnlich] 🌾 Wiesen-Abgenutzte Schuhe automatisch eingesammelt (Essenz +{number1} {number2} G)" },
+		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 Durchbruch auf Stufe {number1} abgeschlossen! Du kannst jetzt noch weiter wachsen." },
+		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 Dungeon-Boss-Truhe – {number1} Ausrüstungsteile, +1 alle {number2} Tiefen (max. {number3})" },
+		{ "Event_Elite  <font color='#{number1}aa{number2}c{number3}'>Elite squad appears</font>", "Event_Elite <font color='#{number1}aa{number2}c{number3}'>Elite-Trupp erscheint </font>" },
+		{ "♻ [Rare] 🌲 Forest Silver Ring auto-salvaged (Essence +{number1} {number2} G)", "♻ [Selten] 🌲 Wald-Silberring automatisch gesammelt (Essenz +{number1} {number2} G)" },
 		{ "Spend {number3} stat points (T key / Stats button)  ✅ tap to claim!", "Gib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!" },
 		{ "With the max {number1} points, crits go from 2x to about {number2}x. Combine", "Mit den maximalen {number1} Punkten steigen Krits von 2x auf etwa {number2}x. Kombiniere" },
 		{ "Mythic gacha gear has a {number1}% chance to carry a Unique effect.", "Mythische Gacha-Ausrüstung hat eine {number1}% Chance auf einen Unique-Effekt." },

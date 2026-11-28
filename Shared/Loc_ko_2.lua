@@ -1335,6 +1335,15 @@ return {
 		["Pick one below"] = "아래에서 고르세요",
 		["Locked effects"] = "잠긴 효과",
 		["defeat zone lords to unlock"] = "구역 군주를 잡으면 열려요",
+		["Unknown set."] = "알 수 없는 세트예요.",
+		["1s later, a 75% shockwave hits the same spot"] = "1초 뒤 같은 자리에 75% 충격파",
+		["each bounce scatters shards (75% total)"] = "튕길 때마다 파편 (합계 75%)",
+		["every 3s, bolts strike 3 enemies (75% total)"] = "3초마다 적 3마리에 낙뢰 (합계 75%)",
+		["missiles split into 3 mini missiles (75% total)"] = "미사일이 소형 3발로 분열 (합계 75%)",
+		["a second 75% nova right after"] = "바로 뒤 75% 노바 한 번 더",
+		["burning kills explode for 75% and spread the burn"] = "불타던 적이 쓰러지면 75% 폭발 + 불이 번짐",
+		["executions deal 75% to nearby enemies"] = "처형하면 주변 적에게 75%",
+		["4 small meteors fall after impact (75% total)"] = "착탄 뒤 소형 유성 4개 (합계 75%)",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1359,7 +1368,5 @@ return {
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Rocket Launcher · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 로켓 발사기 · 녹슨 시대 +{number10}\n📍 필드 (최적: 구역 {number11})" },
 		{ "🎯 Bounty! An elite pack appeared off the main road in Zone {number1}. Defeat all {number2} within {number3} seconds for a reward!", "🎯 현상금! {number1}구역 큰길에서 벗어난 곳에 엘리트 무리가 나타났어요. {number3}초 안에 {number2}마리를 모두 잡으면 보상!" },
 		{ "Defeat as many monsters as you can in {number1} seconds. Rewards x{number2}, and keep your combo going for up to x{number3} more", "{number1}초 동안 몬스터를 최대한 많이 처치하세요. 보상 x{number2}, 콤보를 이어 가면 최대 x{number3} 더" },
-		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Sniper Rifle · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 저격 소총 · 녹슨 시대 +{number10}\n📍 필드 (최적: 구역 {number11})" },
-		{ "\n⚠ The {number1}-hour cap was reached, so {number2} hours' worth couldn't be saved. You can raise the cap in the Shop", "\n⚠ {number1}시간 상한에 도달해서 {number2}시간 분량은 저장하지 못했어요. 상한은 상점에서 올릴 수 있어요" },
 	},
 }

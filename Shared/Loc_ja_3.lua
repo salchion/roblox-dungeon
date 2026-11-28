@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Zone {number1} · Darklands\n🦇 Dark Castle Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠☠\n🦇 New set from here: Dark Pact Set", "ゾーン {number1} ・ダークランド\n🦇 ダークキャッスルゲート · 推奨レベル ⚡{number2}\n危険 ☠☠☠☠☠☠☠\n🦇 ここから新しいセット：ダークパクトセット" },
+		{ "Zone {number1} · Volcano\n🌋 Lava Fortress Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠\n🌋 New set from here: Lava Heart Set", "ゾーン {number1} · 火山\n🌋 溶岩の要塞の門 · レコメンド ⚡{number2}\n危険 ☠☠☠☠☠☠\n🌋 ここから新しいセット：溶岩ハートセット" },
+		{ "🚧 Stuck at level {number1}! Go to Menu (B) → Skills & Growth tab (Passives · Training) to break through.", "🚧 レベル{number1}で停滞中！メニュー(B)→スキル・成長タブ(パッシブ · 訓練)で突破しよう。" },
 		{ "⏰ Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "⏰ 時間切れ！ボスが逃げた — クリアゴールドの{number1}%だけ獲得（宝箱・チケット・深さ記録なし）" },
 		{ "💰 Not enough Gold. ({number1} needed) Earn Gold from field hunting / dungeons / Boss Rush / idle income", "💰 ゴールドが足りません。({number1}必要) フィールド狩り / ダンジョン / ボスラッシュ / 放置収入で入手" },
 		{ "Time's up! The boss escaped — you got {number1}% of the clear gold (no chest, tickets or depth record)", "時間切れ！ボスが逃げた — クリアゴールドの{number1}%だけ獲得（宝箱・チケット・深さ記録なし）" },
@@ -990,13 +993,5 @@ return {
 		{ "🏅 Achievement unlocked! Reward: {text1}{text2}", "🏅 実績解除！報酬: {text1}{text2}" },
 		{ "Upgrade cost {text1} G · You have {text2} G", "強化費用 {text1} G · 所持 {text2} G" },
 		{ "📢 {text1}'s weapon evolved into [{text2}]!", "📢 {text1}の武器が[{text2}]に進化しました！" },
-		{ "✨ {number1}-piece set complete! {text2} {text3} Lv.{number4}", "✨ {number1}ピースセット完成！{text2} {text3} Lv.{number4}" },
-		{ "{text1} {text2} Tier · {number3} bosses defeated", "{text1} {text2}ティア · ボス{number3}体撃破" },
-		{ "⏱ {text1} survived  ×  💥 {text2} damage", "⏱ {text1} 生存  ×  💥 {text2} ダメージ" },
-		{ "▲ {number1} unspent (T)  ·  {text2} / {text3} XP", "▲ {number1} 未使用 (T)  ·  {text2} / {text3} XP" },
-		{ "+{number1} · next {text2} G · you have {text3} G", "+{number1} · 次 {text2} G · 所持 {text3} G" },
-		{ "{text1} New set from here: {text2} Set", "{text1} ここからの新セット: {text2}セット" },
-		{ "(Recommended {text1} · Yours {text2})", "(推奨 {text1} · あなた {text2})" },
-		{ "Open to earn the {text1} {text2} set!", "開放して{text1} {text2}セットを手に入れよう！" },
 	},
 }

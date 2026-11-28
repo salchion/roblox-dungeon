@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Sniper Rifle · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 저격 소총 · 녹슨 시대 +{number10}\n📍 필드 (최적: 구역 {number11})" },
+		{ "\n⚠ The {number1}-hour cap was reached, so {number2} hours' worth couldn't be saved. You can raise the cap in the Shop", "\n⚠ {number1}시간 상한에 도달해서 {number2}시간 분량은 저장하지 못했어요. 상한은 상점에서 올릴 수 있어요" },
 		{ "💰 Not enough gold. ({number1} needed) Earn gold at the dummy yard, field hunting, dungeons, or the Boss Rush", "💰 골드가 부족해요. ({number1} 필요) 허수아비 훈련장 / 필드 사냥 / 던전 / 보스 러시에서 골드를 얻으세요" },
 		{ "🥇 {player1}\n<font color='#ffe{number1}e'>⚡ {number2}</font> Lv.{number3}\n<font color='#{number4}ad{number5}ff'>Spell Tome · Mythic Era +{number6}</font>", "🥇 {player1}\n<font color='#ffe{number1}e'>⚡ {number2}</font> 레벨.{number3}\n<font color='#{number4}ad{number5}ff'>스펠 토메 · 신화 시대 +{number6}</font>" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Spell Tome · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 스펠 토메 · 녹슨 시대 +{number10}\n📍 필드 (최적: 구역 {number11})" },
@@ -950,13 +952,5 @@ return {
 		{ "Slots {number1} / {number2}   (💰 {text3} G · 🔷 {number4})", "칸 {number1} / {number2}   (💰 {text3} G · 🔷 {number4})" },
 		{ "👀 [{text1}] 5-second preview!", "👀 [{text1}] 5초 미리보기!" },
 		{ "💤 Idle income  +{text1} G/sec", "💤 방치 수입  +{text1} G/초" },
-		{ "{text1} is already in a party", "{text1} 님은 이미 파티에 있어요" },
-		{ "⚠ {text1} rising soon · Zone {number2}", "⚠ {text1} 곧 등장 · 구역 {number2}" },
-		{ "Next goal +{number1} · {text1} ({number2} left)", "다음 목표 +{number1} · {text1} ({number2}번 남음)" },
-		{ "Training · Time left {text1}", "훈련 중 · 남은 시간 {text1}" },
-		{ "⚔ New gear equipped! {text1}", "⚔ 새 장비를 장착했어요! {text1}" },
-		{ "{text1} declined your invite", "{text1} 님이 초대를 거절했어요" },
-		{ "{text1} {number1}/6 · 2 pieces needed", "{text1} {number1}/6 · 2부위 필요" },
-		{ "👹 Boss #{number1}: {text2} appeared!", "👹 보스 #{number1}: {text2} 등장!" },
 	},
 }

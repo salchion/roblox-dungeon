@@ -3181,5 +3181,15 @@
 "Pick one below",
 "{number1}/6 · from 2 pieces",
 "Locked effects",
-"defeat zone lords to unlock"
+"defeat zone lords to unlock",
+"Unknown set.",
+"ZONE {number1}",
+"1s later, a 75% shockwave hits the same spot",
+"each bounce scatters shards (75% total)",
+"every 3s, bolts strike 3 enemies (75% total)",
+"missiles split into 3 mini missiles (75% total)",
+"a second 75% nova right after",
+"burning kills explode for 75% and spread the burn",
+"executions deal 75% to nearby enemies",
+"4 small meteors fall after impact (75% total)"
 ]

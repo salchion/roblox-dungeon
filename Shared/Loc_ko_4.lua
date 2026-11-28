@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{text1} is already in a party", "{text1} 님은 이미 파티에 있어요" },
+		{ "⚠ {text1} rising soon · Zone {number2}", "⚠ {text1} 곧 등장 · 구역 {number2}" },
+		{ "Next goal +{number1} · {text1} ({number2} left)", "다음 목표 +{number1} · {text1} ({number2}번 남음)" },
+		{ "Training · Time left {text1}", "훈련 중 · 남은 시간 {text1}" },
+		{ "⚔ New gear equipped! {text1}", "⚔ 새 장비를 장착했어요! {text1}" },
+		{ "{text1} declined your invite", "{text1} 님이 초대를 거절했어요" },
+		{ "{text1} {number1}/6 · 2 pieces needed", "{text1} {number1}/6 · 2부위 필요" },
+		{ "👹 Boss #{number1}: {text2} appeared!", "👹 보스 #{number1}: {text2} 등장!" },
 		{ "Idle income  +{text1} G/sec", "방치 수입  +{text1} G/초" },
 		{ "Time needed {text1} · 💰 {number2} G", "필요 시간 {text1} · 💰 {number2} G" },
 		{ "🏔 Zone {number1} · {text2} cleared!", "🏔 {number1}구역 · {text2} 클리어!" },

@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🛡 Knocked back! Power {number1} required (you: {number2})", "🛡 被击退了!需要战力 {number1}(你:{number2})" },
+		{ "💚 Emergency rescue! HP restored ({number1} left)", "💚 紧急救援!生命已恢复(剩余 {number1} 次)" },
+		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}", "{number1}秒！奖励 x{number2}，连击最多 x{number3}" },
+		{ "🔒 Spend {number1} points in the rows above first", "🔒 先在上面几行投入{number1}点" },
+		{ "Auto-equipped the best gear in {number1} slot(s)", "已为{number1}个部位自动装备最强装备" },
+		{ "🌈 Every {number1} floors: guaranteed Mythic gear", "🌈 每{number1}层：必得神话装备" },
 		{ "Sniper Rifle  ·  keys {number1}-{number2} switch weapons", "狙击步枪 · 键位 {number1}-{number2} 用于切换武器" },
 		{ "🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+", "🥉 {number1}+   🥈 {number2}百万+   🥇 {number3}百万+   💠 {number4}百万+   💎 {number5}百万+   👑 {number6}百万+" },
 		{ "<font color='#{number1}fffb{number2}'><b>Auto-Attack</b>", "<font color='#{number1}fffb{number2}'><b>自动攻击</b>" },

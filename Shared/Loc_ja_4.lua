@@ -4,6 +4,14 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "✨ {number1}-piece set complete! {text2} {text3} Lv.{number4}", "✨ {number1}ピースセット完成！{text2} {text3} Lv.{number4}" },
+		{ "{text1} {text2} Tier · {number3} bosses defeated", "{text1} {text2}ティア · ボス{number3}体撃破" },
+		{ "⏱ {text1} survived  ×  💥 {text2} damage", "⏱ {text1} 生存  ×  💥 {text2} ダメージ" },
+		{ "▲ {number1} unspent (T)  ·  {text2} / {text3} XP", "▲ {number1} 未使用 (T)  ·  {text2} / {text3} XP" },
+		{ "+{number1} · next {text2} G · you have {text3} G", "+{number1} · 次 {text2} G · 所持 {text3} G" },
+		{ "{text1} New set from here: {text2} Set", "{text1} ここからの新セット: {text2}セット" },
+		{ "(Recommended {text1} · Yours {text2})", "(推奨 {text1} · あなた {text2})" },
+		{ "Open to earn the {text1} {text2} set!", "開放して{text1} {text2}セットを手に入れよう！" },
 		{ "{text1}  ·  next weapon: {text2} at +{number3}", "{text1}  ·  次の武器: {text2} (+{number3})" },
 		{ "{text1} Set effect ON: 『{text2}』 Lv.{number3}", "{text1} セット効果オン: 『{text2}』 Lv.{number3}" },
 		{ "{text1} {text2} set gear → open Gear", "{text1} {text2} セット装備 → 装備画面へ" },

@@ -4,6 +4,11 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Transcendent   Title 『Transcendent』\nReach {number1} Power\n{number2} / {number3}   Reward: 🎫 {number4}", "Título trascendente 『Trascendente』\nAlcanza el poder {number1}\n{number2} / {number3} Recompensa: 🎫 {number4}" },
+		{ "each hit adds a burn stack (max {number1}, lasts 4s); every 0.5s per stack", "cada golpe añade una acumulación de quemadura (máx. {number1}, dura 4 s); cada 0,5 s por acumulación" },
+		{ "Aug_Synergy  <font color='#{number1}aa{number2}c{number3}'>Augment synergy triggered</font>", "Sinergia de agosto <font color='#{number1}aa{number2}c{number3}'>Sinergia de aumento activada</font>" },
+		{ "✅ Railgun equipped! (Bounces to {number1} nearby enemies · Longest range)", "✅ ¡Arma de riel equipada! (Rebota contra {number1} enemigos cercanos · Mayor alcance)" },
+		{ "{number1} hours of idle gold ({number2} G) piled up!\n(Idle income bonus +{number3}% active)", "¡{number1} horas de oro inactivo ({number2} G) acumulado!\n(Bonificación de ingresos inactivos +{number3}% activa)" },
 		{ "Weapons reached {number1} / {number2}  ·  Enhance your weapon to meet the next one", "Armas alcanzadas {number1} / {number2}  ·  Mejora tu arma para conocer la siguiente" },
 		{ "Set you're wearing Lv.{number1} · {number2} pieces = Lv.{number3}, Guard Stones for defense", "Set equipado Nv.{number1} · {number2} piezas = Nv.{number3}, defensa con piedras guardianas" },
 		{ "👑 Kill goal reached! Defeat the Lord of Zone {number1} to open the gate!", "👑 ¡Meta de bajas alcanzada! ¡Derrota al señor de la zona {number1} para abrir la puerta!" },
