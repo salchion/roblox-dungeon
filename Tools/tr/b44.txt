@@ -1,0 +1,19 @@
+3231¦近くの敵に爆発弾¦Explosivgeschosse auf nahe Gegner¦Obus explosifs sur les ennemis proches¦Proyectiles explosivos cercanos¦Tiros explosivos em inimigos próximos¦向附近敌人发射爆炸弹¦주변 적에게 폭발탄
+3232¦跳ねる刃¦Abprallende Klingen¦Lames rebondissantes¦Cuchillas que rebotan¦Lâminas que ricocheteiam¦弹射刀刃¦튕기는 칼날
+3233¦落雷¦Blitzschläge¦Coups de foudre¦Rayos¦Raios¦落雷¦주기적 낙뢰
+3234¦クリティカルでミサイル¦Raketen bei Krit¦Missiles sur critique¦Misiles con crítico¦Mísseis no crítico¦暴击时发射导弹¦치명타 때 미사일
+3235¦撃破時に爆発¦Explosion beim Töten¦Explosion à l'élimination¦Explosión al matar¦Explosão ao abater¦击杀爆炸¦처치하면 폭발
+3236¦重なる炎上¦Stapelnder Brand¦Brûlure cumulée¦Quemadura acumulable¦Queimadura acumulada¦叠加灼烧¦맞힐수록 불 중첩
+3237¦弱った敵を処刑¦Erledigt schwache Gegner¦Achève les ennemis affaiblis¦Remata enemigos débiles¦Finaliza inimigos fracos¦处决虚弱敌人¦약한 적 즉사
+3238¦群れに隕石¦Meteore auf Gruppen¦Météores sur les groupes¦Meteoros sobre grupos¦Meteoros em grupos¦陨石砸向敌群¦몰린 곳에 유성
+3239¦被ダメージ減少¦Weniger Schaden¦Moins de dégâts subis¦Menos daño recibido¦Menos dano recebido¦减少受到伤害¦받는 피해 감소
+3240¦最大HPアップ¦Mehr max. LP¦Plus de PV max¦Más vida máxima¦Mais vida máxima¦提高最大生命¦최대 체력 증가
+3241¦ダメージを3秒に分散¦Schaden über 3 s verteilen¦Répartit les dégâts sur 3 s¦Reparte el daño en 3 s¦Divide o dano em 3 s¦伤害分摊到3秒¦피해 3초에 나눠 받기
+3242¦攻撃を回避¦Treffern ausweichen¦Esquive les coups¦Esquiva golpes¦Esquiva golpes¦闪避攻击¦공격 회피
+3243¦HPが低いほど頑丈¦Zäher bei wenig LP¦Plus résistant à faible PV¦Más duro con poca vida¦Mais resistente com pouca vida¦生命越低越坚韧¦체력 낮을수록 단단
+3244¦戦闘中に回復¦Heilung im Kampf¦Soin en combat¦Cura en combate¦Cura em combate¦战斗中回复¦전투 중 회복
+3245¦OFF · {text1}¦aus · {text1}¦inactif · {text1}¦apagado · {text1}¦desligado · {text1}¦未开启 · {text1}¦꺼짐 · {text1}
+3246¦守護石を集める¦Wächtersteine sammeln¦récolte des Pierres de garde¦reúne Piedras guardianas¦junte Pedras guardiãs¦收集守护石¦수호석 모으기
+3247¦セット2部位を装備¦2 Set-Teile tragen¦porte 2 pièces du set¦equipa 2 piezas del set¦equipe 2 peças do set¦穿戴2件套装¦세트 2부위 착용
+3248¦· 今のLv.{number1}：¦· jetzt Lv.{number1}:¦· Lv.{number1} actuel :¦· Lv.{number1} ahora:¦· Lv.{number1} agora:¦· 当前Lv.{number1}：¦· 지금 Lv.{number1}:
+3249¦今のLv.{number1}¦jetzt Lv.{number1}¦Lv.{number1} actuel¦Lv.{number1} ahora¦Lv.{number1} agora¦当前Lv.{number1}¦지금 Lv.{number1}

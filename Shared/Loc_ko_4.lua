@@ -4,6 +4,13 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 {number1}레벨 돌파 시작! ({text2})" },
+		{ "• {text1} <font color='#ffd966'>{number2}/{number3}</font>", "• {text1} <font color='#ffd966'>{number2}/{number3}</font>" },
+		{ "Weapon range +{text1}% per point  (max {number2})", "무기 사거리 포인트당 +{text1}%  (최대 {number2})" },
+		{ "{text1} Set equipped! ({number1} slot(s) changed)", "{text1} 세트 장착! ({number1}부위 교체)" },
+		{ "{text1}  <font color='#8c93b8'>{number2}%</font>", "{text1}  <font color='#8c93b8'>{number2}%</font>" },
+		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} 자동 분해 (정수 +{number2}, {number3} G)" },
+		{ "✅ Daily quest complete! Reward: {text1}", "✅ 일일 퀘스트 완료! 보상: {text1}" },
 		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 {number1}구역 {number2}구간 — 이곳에는 {text3}이(가) 많아요" },
 		{ "Lord of {text1} (Zone {number2}) · ⏱ ~{number3}s · 💥 {number4}% HP", "{text1}의 군주 ({number2}구역) · ⏱ ~{number3}초 · 💥 체력 {number4}%" },
 		{ "🌟 This Fever portal belongs to {text1}.", "🌟 이 피버 포탈은 {text1}님의 것이에요." },
@@ -145,6 +152,7 @@ return {
 		{ "Rusty {text1}", "녹슨 {text1}" },
 		{ "Steel {text1}", "강철 {text1}" },
 		{ "{text1} +1 Lv", "{text1} +1 단계" },
+		{ "off · {text1}", "꺼짐 · {text1}" },
 		{ "Base {text1}", "기본 {text1}" },
 		{ "{text1} left", "{text1} 남음" },
 		{ "Dark {text1}", "어둠 {text1}" },

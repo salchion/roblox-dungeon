@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "First Dungeon   Title 『Dungeon Newbie』\nClear {number1} dungeon(s)\n{number2} / {number3}   Reward: {number4} G + 🎫 {number5}", "Premier donjon - Titre \"Débutant du donjon\"\nTerminer {number1} donjon(s)\n{number2} / {number3} Récompense : {number4} G + 🎫 {number5}" },
+		{ "Golden Hunter   Title 『Lucky Hunter』\nDefeat {number1} Golden Goblin(s)\n{number2} / {number3}   Reward: {number4} G", "Chasseur doré - Titre \"Chasseur chanceux\"\nÉliminer {number1} gobelins dorés\n{number2} / {number3} Récompense : {number4} G" },
+		{ "💰 You have {number1} G left! Upgrade your weapon at the town anvil to get much stronger", "💰 Il vous reste {number1} or ! Améliorez votre arme à l'enclume de la ville pour devenir bien plus fort" },
 		{ "Zone {number1} set effect · Trial Lv.3 — for this dungeon only. Watch for it in combat!", "Effet de set de la zone {number1} · Essai Niv.3 — pour ce donjon uniquement. Guette-le en combat !" },
 		{ "Golden Thief   Title 『Golden Thief』\nDefeat {number1} Golden Goblin(s)\n{number2} / {number3}   Reward: 🎫 {number4}", "Titre du voleur doré\nÉliminer {number1} gobelins dorés\n{number2} / {number3} Récompense : 🎫 {number4}" },
 		{ "✨ Stat points +{number1}! {number2} unspent (press T to raise move speed / range / double shot)", "✨ Points de stats +{number1} ! {number2} non dépensés (appuyez sur T pour augmenter la vitesse / portée / tir double)" },
@@ -663,6 +666,7 @@ return {
 		{ "Dismantle {number1}", "Démanteler {number1}" },
 		{ "Lv.{number1} · no ★", "Lv.{number1} · pas de ★" },
 		{ "Zone {number1} lord", "Seigneur de la zone {number1}" },
+		{ "· Lv.{number1} now:", "· Lv.{number1} actuel :" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
 		{ "Damage +{number2}%", "Dégâts +{number2}%" },
 		{ "x{number1}\nUpgrade", "x {number1}\nAmélioration" },
@@ -718,6 +722,7 @@ return {
 		{ "Luck +{number1}%", "Chance +{number1}%" },
 		{ "Luck -{number1}%", "Chance -{number1}%" },
 		{ "elite {number1}%", "élite {number1} %" },
+		{ "Lv.{number1} now", "Lv.{number1} actuel" },
 		{ "{number1} / {number2} XP", "{number1} / {number2} d'EXP" },
 		{ "⚡ {number1} Lv.{number2}", "⚡ {number1} Niveau {number2}" },
 		{ "≈ {number1} dmg", "≈ {number1} dégâts" },
@@ -937,6 +942,7 @@ return {
 		{ "Rusty {text1}", "Rouillé {text1}" },
 		{ "Steel {text1}", "Acier {text1}" },
 		{ "{text1} +1 Lv", "{text1} +1 Nv" },
+		{ "off · {text1}", "inactif · {text1}" },
 		{ "Base {text1}", "Base {text1}" },
 		{ "{text1} left", "{text1} restant" },
 		{ "Dark {text1}", "Ténèbres {text1}" },

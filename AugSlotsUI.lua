@@ -75,6 +75,20 @@ local function stoneReadyCost(z)
 	if need and (attr("GuardStones") or 0) >= need then return need, stone + 1 end
 	return nil
 end
+-- 지금 단계에서 실제로 하는 일 한 줄 (Config.AugLevelLine 의 단계 문장, "★추가 효과" 꼬리는 뺀다)
+local function levelLine(z, level)
+	if level <= 0 then return nil end
+	local text = Config.AugLevelLine(Config.Sets.ZoneAug[z], math.min(6, level))
+	text = string.split(text, " · ★")[1]
+	return text ~= "" and text or nil
+end
+-- 아래 보석의 짧은 역할 (무슨 효과인지 한눈에)
+local ROLE = {
+	AugPulse = "Blast shells at nearby foes", AugOrbit = "Bouncing blades", AugStorm = "Lightning strikes", AugMissile = "Missiles on crit",
+	AugNova = "Kill explosions", AugFlame = "Stacking burn", AugExecute = "Finishes weak foes", AugMeteor = "Meteors on crowds",
+	AugWard = "Less damage taken", AugBody = "More max HP", AugBuffer = "Spread damage over 3s", AugEvade = "Dodge hits",
+	AugGrit = "Tougher at low HP", AugRegen = "Heal in combat",
+}
 local function tenText(z) return Config.AugSlotTen[Config.Sets.ZoneAug[z] or ""] or "bonus effect" end
 
 -- 동그란 보석 (소켓 / 후보 공용): 바깥 금테 + 안쪽 색 + 가운데 아이콘
@@ -132,7 +146,10 @@ function UI.Build(panel)
 			TextColor3 = CREAM, BackgroundColor3 = Color3.fromRGB(18, 14, 24), ZIndex = 8 })
 		local pips = text({ Size = UDim2.new(1, 0, 0, 18), Position = UDim2.new(0, 0, 0, RING + 16), Text = "", TextSize = 13 }, holder)
 		local name = text({ Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 0, RING + 36), Text = "", TextSize = 15, Font = Enum.Font.GothamBlack, TextTruncate = Enum.TextTruncate.AtEnd }, holder)
-		local src = text({ Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, RING + 56), Text = "", TextSize = 11, TextColor3 = MUTED, TextTruncate = Enum.TextTruncate.AtEnd }, holder)
+		local src = text({ Size = UDim2.new(1, 10, 0, 18), Position = UDim2.new(0, -5, 0, RING + 55), Text = "", TextSize = 12, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(120, 255, 140),
+			TextTruncate = Enum.TextTruncate.AtEnd }, holder) -- (11-30: 지금 단계 효과 한 줄 · 세트 이름 / 부위는 이름 옆에 작게)
+		src.BackgroundTransparency, src.BackgroundColor3 = 0.45, Color3.fromRGB(0, 0, 0)
+		round(src, 8)
 		local goal = text({ Size = UDim2.new(1, 10, 0, 16), Position = UDim2.new(0, -5, 0, RING + 73), Text = "", TextSize = 11, TextColor3 = Color3.fromRGB(255, 217, 102), TextTruncate = Enum.TextTruncate.AtEnd }, holder)
 		local up = make("TextButton", { Size = UDim2.new(0, 160, 0, 32), Position = UDim2.new(0.5, -80, 0, RING + 96), BackgroundColor3 = Color3.fromRGB(70, 180, 82), Text = "", TextSize = 13,
 			Font = Enum.Font.GothamBlack, TextColor3 = Color3.new(1, 1, 1), ZIndex = 7 }, holder)
@@ -174,7 +191,7 @@ function UI.Build(panel)
 	round(info, 12)
 	make("UIStroke", { Color = GOLD, Thickness = 1, Transparency = 0.5 }, info)
 	local infoIcon = text({ Size = UDim2.new(0, 40, 1, 0), Position = UDim2.new(0, 4, 0, 0), Text = "", TextSize = 24, TextXAlignment = Enum.TextXAlignment.Center }, info)
-	local infoLine1 = text({ Size = UDim2.new(1, -60, 0, 20), Position = UDim2.new(0, 48, 0, 3), Text = "", TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, info)
+	local infoLine1 = text({ Size = UDim2.new(1, -60, 0, 20), Position = UDim2.new(0, 48, 0, 3), Text = "", TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, info)
 	local cancelBtn = make("TextButton", { Size = UDim2.new(0, 96, 0, 30), Position = UDim2.new(1, -104, 0.5, -15), BackgroundColor3 = Color3.fromRGB(90, 32, 48), Text = "✖ Cancel", TextSize = 13,
 		Font = Enum.Font.GothamBlack, TextColor3 = Color3.new(1, 1, 1), Visible = false, ZIndex = 6 }, info)
 	round(cancelBtn, 15)
@@ -210,7 +227,7 @@ function UI.Build(panel)
 		local info = infoOf(z)
 		local level = attr("AugGearZ_" .. z) or 0
 		local def = isDefense(z)
-		local cell = make("Frame", { Size = UDim2.new(0, 82, 0, 86), BackgroundTransparency = 1, LayoutOrder = order, ZIndex = 4 }, parent)
+		local cell = make("Frame", { Size = UDim2.new(0, 98, 0, 86), BackgroundTransparency = 1, LayoutOrder = order, ZIndex = 4 }, parent)
 		local o, stroke, icon, grad = orb(cell, 52, { Position = UDim2.new(0.5, -26, 0, 2) })
 		icon.Text = info.Icon
 		o.BackgroundColor3 = def and Color3.fromRGB(26, 52, 84) or Color3.fromRGB(96, 60, 30)
@@ -225,15 +242,8 @@ function UI.Build(panel)
 				TextColor3 = CREAM, BackgroundColor3 = Color3.fromRGB(18, 14, 24), ZIndex = 7 })
 		end
 		text({ Size = UDim2.new(1, 4, 0, 14), Position = UDim2.new(0, -2, 0, 60), Text = info.Name, TextSize = 11, TextColor3 = level > 0 and Color3.new(1, 1, 1) or DIM, TextTruncate = Enum.TextTruncate.AtEnd }, cell)
-		local sub
-		if def then
-			sub = string.format("Guard Stone %d/6", attr("AugStoneZ_" .. z) or 0)
-		else
-			local pieces = attr("AugSetZ_" .. z) or 0
-			local setDef = setOf(z)
-			sub = pieces < 2 and string.format("%d/6 · from 2 pieces", pieces) or string.format("%s %d/6", setDef and setDef.Prefix or "", pieces)
-		end
-		text({ Size = UDim2.new(1, 10, 0, 12), Position = UDim2.new(0, -5, 0, 75), Text = sub, TextSize = 9, TextColor3 = MUTED, TextTruncate = Enum.TextTruncate.AtEnd }, cell)
+		local sub = "<font color='" .. (def and "#8fe0ff" or "#ffb86b") .. "'>" .. (ROLE[Config.Sets.ZoneAug[z]] or "") .. "</font>" -- (11-30: 부위 수 대신 짧은 역할. 부위 수는 설명 줄에)
+		text({ Size = UDim2.new(1, 10, 0, 12), Position = UDim2.new(0, -5, 0, 75), Text = sub, TextSize = 10, Font = Enum.Font.GothamBold, TextColor3 = MUTED, TextTruncate = Enum.TextTruncate.AtEnd }, cell)
 		local hit = make("TextButton", { Size = UDim2.new(0, 52, 0, 52), Position = UDim2.new(0.5, -26, 0, 2), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, cell)
 		gemStrokes[z] = { Stroke = stroke, Base = stroke.Color }
 		hit.Activated:Connect(function() -- (11-28 B안) 보석 = 고르기만 (아무것도 안 보낸다) → 위 소켓을 눌러 칸 확정. 같은 보석을 다시 누르면 취소
@@ -296,7 +306,10 @@ function UI.Build(panel)
 			local level = attr("AugGearZ_" .. z) or 0
 			local aw = attr("AugAwakeZ_" .. z) == true and Config.AugAwaken[Config.Sets.ZoneAug[z]]
 			infoIcon.Text = zi.Icon
-			infoLine1.Text = string.format("<b>%s</b>  <font color='#d8cce8'>%s</font>", zi.Name, zi.Desc or "")
+			local now = levelLine(z, level)
+			local where = isDefense(z) and string.format("🔷 %d/6", attr("AugStoneZ_" .. z) or 0) or string.format("%d/6", attr("AugSetZ_" .. z) or 0)
+			infoLine1.Text = string.format("<b>%s</b> <font size='11' color='#b8a8d0'>%s</font>  <font color='#d8cce8'>%s</font>", zi.Name, where, zi.Desc or "")
+				.. (now and ("  <font color='#78ff8c'>" .. string.format("· Lv.%d now: ", math.min(6, level)) .. "</font><font color='#78ff8c'>" .. now .. "</font>") or "")
 			local wtext = not isDefense(z) and weaponText(z)
 			if wtext then -- 공격 효과: 어울리는 무기를 맨 앞에 (예전 창의 "무기 궁합" 띠)
 				infoLine2.Text = wtext .. (aw and ("  <font color='#ff9be6'>" .. string.format("👑 Awakening: %s", aw.Name) .. "</font>") or (level <= 0 and "  <font color='#9a8ab8'>· tap it, then a slot</font>" or ""))
@@ -407,6 +420,7 @@ function UI.Build(panel)
 				s.Gun.Visible = false
 				s.Name.Text = "<font color='#9a8ab8'>Empty slot</font>"
 				s.Src.Text = "Pick one below"
+				s.Src.BackgroundTransparency = 1
 				s.Goal.Text = ""
 			else
 				local level = attr("AugGearZ_" .. z) or 0
@@ -414,14 +428,18 @@ function UI.Build(panel)
 				local _, gunMatch = weaponText(z)
 				s.Gun.Visible = not def and gunMatch
 				s.Lv.Text = string.format("Lv.%d", level) .. (attr("AugAwakeZ_" .. z) == true and " 👑" or (not def and level >= 4 and " ★" or ""))
-				s.Name.Text = info.Name
+				local small
 				if def then
 					local eff = attr("AugSlotEff_" .. i) or 1
-					s.Src.Text = string.format("🔷 Guard Stone %d/6", attr("AugStoneZ_" .. z) or 0) .. (eff < 1 and string.format(" · <font color='#ffb84d'>2nd defense = %d%%</font>", math.floor(eff * 100 + 0.5)) or "")
+					small = string.format("🔷 %d/6", attr("AugStoneZ_" .. z) or 0) .. (eff < 1 and string.format(" · <font color='#ffb84d'>2nd defense = %d%%</font>", math.floor(eff * 100 + 0.5)) or "")
 				else
 					local setDef = setOf(z)
-					s.Src.Text = string.format("%s <font color='#d8cce8'>%s</font> <font color='#78ff8c'>%d/6</font>", setDef and setDef.Icon or "", setDef and setDef.Name or "", attr("AugSetZ_" .. z) or 0) -- (세트 이름은 따로 감싸야 통째로 번역된다: "사막 Sun" 처럼 반만 번역됐다)
+					small = string.format("%s <font color='#d8cce8'>%s</font> <font color='#78ff8c'>%d/6</font>", setDef and setDef.Icon or "", setDef and setDef.Name or "", attr("AugSetZ_" .. z) or 0) -- (세트 이름은 따로 감싸야 통째로 번역된다)
 				end
+				s.Name.Text = "<b>" .. info.Name .. "</b>  <font size='11' color='#b8a8d0'>" .. small .. "</font>"
+				local line = levelLine(z, level)
+				s.Src.Text = line and line or "<font color='#9a8ab8'>off · " .. (def and "collect Guard Stones" or "wear 2 set pieces") .. "</font>"
+				s.Src.BackgroundTransparency = 0.45
 				if lv >= 10 then
 					s.Goal.Text = "<font color='#78ff8c'>✔ +10 </font><font color='#78ff8c'>" .. tenText(z) .. "</font>"
 				else

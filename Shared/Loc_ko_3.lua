@@ -4,6 +4,8 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🌟 A golden FEVER portal opened next to the fallen Colossus! Grab your loot, then press E at the portal within {number1} seconds!", "🌟 쓰러진 거신 옆에 황금 피버 포탈이 열렸어요! 전리품을 줍고 {number1}초 안에 포탈에서 E를 누르세요!" },
+		{ "🔒 Zone {number1} · Wasteland Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏚 Will of the Ruins set!", "🔒 구역 {number1} · 황무지 봉쇄됨\n구역 {number2} 몬스터 {number3} / {number4} 처치 · 군주 👑 미처치\n오픈하여 🏚 폐허의 의지 세트를 획득하세요!" },
 		{ "Legendary Blacksmith   Title 『Legendary Blacksmith』\nUpgrade all the way to the last weapon (level {number1})\n{number2} / {number3}   Reward: 🎫 {number4}", "전설의 대장장이 타이틀 『전설의 대장장이』\n마지막 무기(레벨 {number1})까지 모두 업그레이드하세요\n{number2} / {number3} 보상: 🎫 {number4}" },
 		{ "🔒 Zone {number1} · Desert Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏜 Desert Sun set!", "🔒 구역 {number1} · 사막 봉쇄됨\n구역 {number2} 몬스터 {number3} / {number4} 처치 · 군주 👑 미처치\n열고 사막 태양 세트를 획득하세요!" },
 		{ "💰 Not enough Gold. ({number1} needed) Earn Gold at the Training Dummy / field hunting / dungeons / Boss Rush rewards", "💰 골드가 부족해요. ({number1} 필요) 훈련 허수아비 / 필드 사냥 / 던전 / 보스 러시 보상으로 골드를 얻으세요" },
@@ -745,6 +747,7 @@ return {
 		{ "Dismantle {number1}", "{number1}개 분해" },
 		{ "Lv.{number1} · no ★", "Lv.{number1} · ★ 없음" },
 		{ "Zone {number1} lord", "{number1}구역 군주" },
+		{ "· Lv.{number1} now:", "· 지금 Lv.{number1}:" },
 		{ "💰 {number4} G   🎫 {number5}", "💰 {number4} G 🎫 {number5}" },
 		{ "🔥 Combo x{number1}", "🔥 콤보 x{number1}" },
 		{ "Damage +{number2}%", "피해량 +{number2}%" },
@@ -803,6 +806,7 @@ return {
 		{ "Luck +{number1}%", "행운 +{number1}%" },
 		{ "Luck -{number1}%", "행운 -{number1}%" },
 		{ "elite {number1}%", "엘리트 {number1}%" },
+		{ "Lv.{number1} now", "지금 Lv.{number1}" },
 		{ "{number1} / {number2} XP", "{number1} / {number2} 경험치" },
 		{ "⚡ {number1} Lv.{number2}", "⚡ {number1} 레벨.{number2}" },
 		{ "≈ {number1} dmg", "≈ {number1} 피해" },
@@ -924,12 +928,5 @@ return {
 		{ "{text1}... auto-dismantled! Essence +{number2}, {number3} G", "{text1}... 자동 분해! 정수 +{number2}, {number3} G" },
 		{ "👑 Lord of {text1} (Zone {number2}) · ⏱ ~{number3}s · 💥 {number4}% HP", "👑 {text1}의 군주 ({number2}구역) · ⏱ ~{number3}초 · 💥 체력 {number4}%" },
 		{ "👑 Lord of {text1} (Zone {number1}) · ⏱ ~{number2}s · 💥 {number3}% HP", "👑 {text1}의 군주 ({number1}구역) · ⏱ ~{number2}초 · 💥 체력 {number3}%" },
-		{ "🌟 Level {number1} breakthrough started! ({text2})", "🌟 {number1}레벨 돌파 시작! ({text2})" },
-		{ "• {text1} <font color='#ffd966'>{number2}/{number3}</font>", "• {text1} <font color='#ffd966'>{number2}/{number3}</font>" },
-		{ "Weapon range +{text1}% per point  (max {number2})", "무기 사거리 포인트당 +{text1}%  (최대 {number2})" },
-		{ "{text1} Set equipped! ({number1} slot(s) changed)", "{text1} 세트 장착! ({number1}부위 교체)" },
-		{ "{text1}  <font color='#8c93b8'>{number2}%</font>", "{text1}  <font color='#8c93b8'>{number2}%</font>" },
-		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} 자동 분해 (정수 +{number2}, {number3} G)" },
-		{ "✅ Daily quest complete! Reward: {text1}", "✅ 일일 퀘스트 완료! 보상: {text1}" },
 	},
 }
