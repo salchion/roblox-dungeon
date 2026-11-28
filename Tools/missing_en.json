@@ -3228,5 +3228,6 @@
 "Not in the dungeon",
 "Put here",
 "Best with",
-"· tap it, then a slot"
+"· tap it, then a slot",
+"You can raise {text1} to Lv.{number1} with {number2} Guard Stones (🔷 button on the gem)"
 ]

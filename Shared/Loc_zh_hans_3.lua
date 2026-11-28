@@ -639,6 +639,7 @@ return {
 		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "地下城 · 选择深度(越深掉落几率越高) · 随机主题 · {text1}" },
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "获得{text1}！已放入背包。(I → 从背包装备)  ▲ 比当前 +{number2}%" },
 		{ "⚠ A World Boss is stirring in Zone {number1} · {text2}... it rises in {number3} seconds!", "⚠ {number1}区域 · {text2} 的世界首领正在苏醒……{number3}秒后出现！" },
+		{ "You can raise {text1} to Lv.{number1} with {number2} Guard Stones (🔷 button on the gem)", "可用{number2}个守护石将{text1}升到Lv.{number1}（宝石上的🔷按钮）" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 大门已关闭!击败区域{number1}怪物 {number2}/{number3} + 区域领主{text4}" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ 宠物升级已开始!({text1})— 使用时间加速可提前完成" },
 		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "推荐 ⚡{text1}  ·  瞄准黄色光球可造成3倍伤害!" },

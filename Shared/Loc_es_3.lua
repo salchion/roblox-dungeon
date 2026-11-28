@@ -752,6 +752,7 @@ return {
 		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "Mazmorra · elige una profundidad (más profundo = mejores probabilidades de botín) · tema aleatorio · {text1}" },
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "¡{text1} obtenido! Añadido a la bolsa. (I → equipar desde la bolsa)  ▲ +{number2}% vs actual" },
 		{ "⚠ A World Boss is stirring in Zone {number1} · {text2}... it rises in {number3} seconds!", "⚠ Un jefe mundial despierta en la zona {number1} · {text2}... ¡aparece en {number3} segundos!" },
+		{ "You can raise {text1} to Lv.{number1} with {number2} Guard Stones (🔷 button on the gem)", "Puedes subir {text1} a Lv.{number1} con {number2} Piedras guardianas (botón 🔷 en la gema)" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 ¡La puerta está cerrada! Derrota a los monstruos de la zona {number1} {number2}/{number3} + al señor de la zona{text4}" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ ¡Subida de nivel de la mascota iniciada! ({text1}) — usa Acelerar tiempo para terminar antes" },
 		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "Recomendado ⚡{text1}  ·  ¡Apunta al orbe amarillo para triple daño!" },

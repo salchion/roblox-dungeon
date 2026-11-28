@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 {number1}구역 {number2}구간 — 이곳에는 {text3}이(가) 많아요" },
 		{ "Lord of {text1} (Zone {number2}) · ⏱ ~{number3}s · 💥 {number4}% HP", "{text1}의 군주 ({number2}구역) · ⏱ ~{number3}초 · 💥 체력 {number4}%" },
 		{ "🌟 This Fever portal belongs to {text1}.", "🌟 이 피버 포탈은 {text1}님의 것이에요." },
 		{ "Need {number1} {text2} items to fuse (you have {number3})", "합성하려면 {text2} 장비 {number1}개가 필요해요 (보유 {number3})" },

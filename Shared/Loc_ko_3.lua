@@ -879,6 +879,7 @@ return {
 		{ "🛡 {text1}   <font color='#888888'>Empty (roll with Boss Tickets)</font>", "🛡 {text1}   <font color='#888888'>비어 있음 (보스 티켓으로 뽑기)</font>" },
 		{ "⚠ A World Boss is stirring in Zone {number1} · {text2}... it rises in {number3} seconds!", "⚠ {number1}구역 · {text2}에서 월드 보스가 깨어나고 있어요... {number3}초 뒤 등장!" },
 		{ "▶ <b>{number1} more</b> to unlock <font color='#9ad7ff'><b>{text2}</b></font>!", "▶ <b>{number1}</b> 남음 — <font color='#9ad7ff'><b>{text2}</b></font> 해금!" },
+		{ "You can raise {text1} to Lv.{number1} with {number2} Guard Stones (🔷 button on the gem)", "수호석 {number2}개로 {text1}을(를) Lv.{number1}로 올릴 수 있어요 (보석의 🔷 버튼)" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 문이 닫혀 있어요! {number1}구역 몬스터 {number2}/{number3} + 구역 군주{text4} 처치 필요" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ 펫 레벨업 시작! ({text1}) — 시간 단축으로 더 빨리 끝낼 수 있어요" },
 		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "권장 ⚡{text1}  ·  노란 구슬을 노리면 피해 3배!" },
@@ -930,6 +931,5 @@ return {
 		{ "{text1}  <font color='#8c93b8'>{number2}%</font>", "{text1}  <font color='#8c93b8'>{number2}%</font>" },
 		{ "♻ {text1} auto-salvaged (Essence +{number2}, {number3} G)", "♻ {text1} 자동 분해 (정수 +{number2}, {number3} G)" },
 		{ "✅ Daily quest complete! Reward: {text1}", "✅ 일일 퀘스트 완료! 보상: {text1}" },
-		{ "📍 Zone {number1} Section {number2} — lots of {text3} here", "📍 {number1}구역 {number2}구간 — 이곳에는 {text3}이(가) 많아요" },
 	},
 }

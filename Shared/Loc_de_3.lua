@@ -736,6 +736,7 @@ return {
 		{ "Dungeon · pick a depth (deeper = better drop odds) · random theme · {text1}", "Dungeon · wähle eine Tiefe (tiefer = bessere Drop-Chancen) · zufälliges Thema · {text1}" },
 		{ "{text1} obtained! Added to your bag. (I → equip from Bag)  ▲ +{number2}% vs current", "{text1} erhalten! Zur Tasche hinzugefügt. (I → aus der Tasche ausrüsten)  ▲ +{number2}% ggü. aktuell" },
 		{ "⚠ A World Boss is stirring in Zone {number1} · {text2}... it rises in {number3} seconds!", "⚠ In Zone {number1} · {text2} regt sich ein Weltboss... er erscheint in {number3} Sekunden!" },
+		{ "You can raise {text1} to Lv.{number1} with {number2} Guard Stones (🔷 button on the gem)", "Du kannst {text1} mit {number2} Wächtersteinen auf Lv.{number1} bringen (🔷-Knopf am Juwel)" },
 		{ "🔒 The gate is closed! Defeat Zone {number1} monsters {number2}/{number3} + the zone Lord{text4}", "🔒 Das Tor ist geschlossen! Besiege Zone-{number1}-Monster {number2}/{number3} + den Zonen-Lord{text4}" },
 		{ "⏳ Pet level-up started! ({text1}) — use Time Skip to finish sooner", "⏳ Haustier-Aufstieg gestartet! ({text1}) — Mit Zeit überspringen geht es schneller" },
 		{ "Recommended ⚡{text1}  ·  Aim at the yellow orb for 3x damage!", "Empfohlen ⚡{text1}  ·  Ziele auf die gelbe Kugel für 3-fachen Schaden!" },

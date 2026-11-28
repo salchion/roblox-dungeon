@@ -67,6 +67,14 @@ local function weaponText(z)
 	end
 	return "<font color='#ffcf8a'>🔫 Best with </font>" .. table.concat(names, " / ") .. string.format("<font color='#9a8ab8'> (+%d%%)</font>", bonus), false
 end
+-- 🔷 지금(마을에서) 수호석으로 바로 올릴 수 있나: 다음 단계 비용 (아니면 nil). 메뉴 "세트" 버튼 빨간 점(MenuDockClient)과 같은 규칙
+local function stoneReadyCost(z)
+	if not isDefense(z) or attr("AugOpenZ_" .. z) ~= true or not atTown() then return nil end
+	local stone = attr("AugStoneZ_" .. z) or 0
+	local need = Config.Guard.StoneCost[stone + 1]
+	if need and (attr("GuardStones") or 0) >= need then return need, stone + 1 end
+	return nil
+end
 local function tenText(z) return Config.AugSlotTen[Config.Sets.ZoneAug[z] or ""] or "bonus effect" end
 
 -- 동그란 보석 (소켓 / 후보 공용): 바깥 금테 + 안쪽 색 + 가운데 아이콘
@@ -254,13 +262,17 @@ function UI.Build(panel)
 				round(sb, 9)
 				make("UIStroke", { Color = Color3.fromRGB(159, 192, 255), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, sb)
 				sb.Activated:Connect(function() Remotes.Aug:FireServer("Stone", z) end)
+				if ready then -- (빨간 점의 이유: 지금 올릴 수 있는 🔷 버튼이 숨 쉬듯 커졌다 작아진다)
+					local scale = make("UIScale", { Scale = 1 }, sb)
+					game:GetService("TweenService"):Create(scale, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { Scale = 1.25 }):Play()
+				end
 			end
 		end
 	end
 
 	-- 설명 줄만 다시 쓴다 (보석 / 소켓 버튼은 그대로 둔다: 누르고 있는 버튼을 지우지 않게)
 	refreshInfo = function()
-		if preview and inSlot(preview) then preview = nil end
+		if preview and inSlot(preview) and not stoneReadyCost(preview) then preview = nil end -- (수호석으로 올릴 수 있는 방어 효과는 칸에 들어 있어도 설명 줄에 남긴다)
 		if picked and inSlot(picked) then picked = nil end
 		cancelBtn.Visible = picked ~= nil
 		info.BackgroundColor3 = picked and Color3.fromRGB(20, 44, 26) or Color3.fromRGB(16, 12, 22)
@@ -288,6 +300,9 @@ function UI.Build(panel)
 			local wtext = not isDefense(z) and weaponText(z)
 			if wtext then -- 공격 효과: 어울리는 무기를 맨 앞에 (예전 창의 "무기 궁합" 띠)
 				infoLine2.Text = wtext .. (aw and ("  <font color='#ff9be6'>" .. string.format("👑 Awakening: %s", aw.Name) .. "</font>") or (level <= 0 and "  <font color='#9a8ab8'>· tap it, then a slot</font>" or ""))
+			elseif stoneReadyCost(z) then -- 🔷 지금 수호석으로 올릴 수 있다 (메뉴 빨간 점의 이유)
+				local cost, nextLv = stoneReadyCost(z)
+				infoLine2.Text = "<font color='#8fe0ff'>" .. string.format("🔷 You can raise %s to Lv.%d with %d Guard Stones (🔷 button on the gem)", zi.Name, nextLv, cost) .. "</font>"
 			elseif aw then
 				infoLine2.Text = "<font color='#ff9be6'>" .. string.format("👑 Awakening: %s", aw.Name) .. "</font>  " .. aw.Desc
 			elseif level <= 0 then
@@ -483,7 +498,14 @@ function UI.Build(panel)
 			task.defer(function() queued = false if panel.Visible then UI.Refresh() end end)
 		end)
 	end
-	panel:GetPropertyChangedSignal("Visible"):Connect(function() if panel.Visible then UI.Refresh() end end)
+	panel:GetPropertyChangedSignal("Visible"):Connect(function()
+		if not panel.Visible then return end
+		if not picked then -- (빨간 점을 보고 열었을 때: 수호석으로 올릴 수 있는 방어 효과를 설명 줄에 먼저 보여 준다)
+			preview = nil
+			for z = 1, ZONES do if stoneReadyCost(z) then preview = z break end end
+		end
+		UI.Refresh()
+	end)
 	UI.Refresh()
 	return UI
 end
