@@ -147,6 +147,8 @@ function UI.Build(panel)
 	local function inSlot(z) for i = 1, S.Count do if slotZone(i) == z then return i end end return nil end
 
 	local refreshInfo -- (아래에서 정의: 보석 버튼이 부른다)
+	local gemStrokes = {} -- [구역] = { Stroke, Base } (미리 보는 보석 금테: 보석을 다시 만들지 않고 테두리만 바꾼다)
+	local GEM_THICK = math.max(2, 52 / 18) -- (orb 기본 두께와 같게)
 	local function gem(parent, z, order)
 		local info = infoOf(z)
 		local level = attr("AugGearZ_" .. z) or 0
@@ -176,7 +178,7 @@ function UI.Build(panel)
 		end
 		text({ Size = UDim2.new(1, 10, 0, 12), Position = UDim2.new(0, -5, 0, 75), Text = sub, TextSize = 9, TextColor3 = MUTED, TextTruncate = Enum.TextTruncate.AtEnd }, cell)
 		local hit = make("TextButton", { Size = UDim2.new(0, 52, 0, 52), Position = UDim2.new(0.5, -26, 0, 2), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, cell)
-		if preview == z then stroke.Color = GOLD_HI stroke.Thickness = 4 end
+		gemStrokes[z] = { Stroke = stroke, Base = stroke.Color }
 		hit.Activated:Connect(function() -- (11-28) 폰 / PC 모두 한 번 누르면 바로 고른 칸에. 못 넣는 효과(레벨 0)는 설명만 보여 준다
 			preview = z
 			if level > 0 then Remotes.Aug:FireServer("Slot", selectedSlot, z) end -- (들어가면 서버 속성이 바뀌어 전체 Refresh 가 따로 돈다: 그때 설명 줄은 칸에 든 그 효과)
@@ -226,9 +228,16 @@ function UI.Build(panel)
 				infoLine2.Text = ""
 			end
 		end
+		for gz, g in pairs(gemStrokes) do -- 미리 보는 보석만 금테, 나머지는 원래 색으로
+			if g.Stroke.Parent then
+				g.Stroke.Color = preview == gz and GOLD_HI or g.Base
+				g.Stroke.Thickness = preview == gz and 4 or GEM_THICK
+			end
+		end
 	end
 
 	function UI.Refresh()
+		gemStrokes = {} -- (아래에서 보석을 다시 만들며 새로 담는다: 지워진 보석의 테두리가 남지 않게)
 		resLabel.Text = string.format("🔷 %d · 💰 %s", attr("GuardStones") or 0, commas(attr("Gold") or 0))
 		for i, s in ipairs(sockets) do
 			local z = slotZone(i)
@@ -292,7 +301,6 @@ function UI.Build(panel)
 				s.UpStroke.Color = ok and Color3.fromRGB(184, 255, 191) or Color3.fromRGB(120, 110, 140)
 			end
 		end
-		refreshInfo()
 		-- 후보 보석
 		local locked = {}
 		for key, r in pairs(rows) do
@@ -321,6 +329,7 @@ function UI.Build(panel)
 			end
 			text({ Size = UDim2.new(0, 200, 1, 0), AutomaticSize = Enum.AutomaticSize.X, Text = "defeat zone lords to unlock", TextSize = 12, TextColor3 = DIM, LayoutOrder = 100 }, lockRow)
 		end
+		refreshInfo() -- (보석을 다 만든 뒤: 설명 줄 + 미리 보는 보석 금테)
 	end
 
 	function UI.Focus(zone) -- 장비 창 "내 세트" ✨: 그 효과가 든 칸을 고른다
