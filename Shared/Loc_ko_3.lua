@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Defeat as many monsters as you can in {number1} seconds. Rewards x{number2}, and keep your combo going for up to x{number3} more", "{number1}초 동안 몬스터를 최대한 많이 처치하세요. 보상 x{number2}, 콤보를 이어 가면 최대 x{number3} 더" },
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Sniper Rifle · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 저격 소총 · 녹슨 시대 +{number10}\n📍 필드 (최적: 구역 {number11})" },
 		{ "\n⚠ The {number1}-hour cap was reached, so {number2} hours' worth couldn't be saved. You can raise the cap in the Shop", "\n⚠ {number1}시간 상한에 도달해서 {number2}시간 분량은 저장하지 못했어요. 상한은 상점에서 올릴 수 있어요" },
 		{ "💰 Not enough gold. ({number1} needed) Earn gold at the dummy yard, field hunting, dungeons, or the Boss Rush", "💰 골드가 부족해요. ({number1} 필요) 허수아비 훈련장 / 필드 사냥 / 던전 / 보스 러시에서 골드를 얻으세요" },
@@ -106,6 +107,7 @@ return {
 		{ "Sweep needs {number1} key(s). Defeat a field zone lord to get keys", "소탕에는 열쇠가 {number1}개 필요해요. 필드 구역 군주를 쓰러뜨려 열쇠를 얻으세요" },
 		{ "You can run {number1} effects at once. Turn another one off first", "효과는 한 번에 {number1}개까지 쓸 수 있어요. 먼저 다른 하나를 끄세요" },
 		{ "Town north gate · boss chest gear + gold · Free {number1} · Keys {number2}", "마을 북쪽 관문 · 보스 상자에서 장비 + 골드 · 무료 {number1} · 열쇠 {number2}" },
+		{ "Tap a gem below to see it · tap again to put it in Slot {number1}", "아래 보석을 누르면 설명 · 한 번 더 누르면 칸 {number1}에 넣기" },
 		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "가챠_팝{number1} <font color='#{number2}aa{number3}c{number4}'>가챠 결과: 에픽</font>" },
 		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "{number1}시간의 유휴 수입을 즉시 획득하세요 · 하루 최대 {number2}" },
 		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 구역 {number1} · 다크랜드 봉쇄됨\n먼저 이전 게이트를 여세요" },
@@ -354,6 +356,7 @@ return {
 		{ "Points left · next +1 at Lv.{number1}", "남은 포인트 · 다음 +1은 Lv.{number1}" },
 		{ "Zone {number1} · Gold {number2} + Gear option {number3}", "{number1}구역 · 골드 {number2} + 장비 옵션 {number3}" },
 		{ "Zone {number1} · Gold {number2} + Guard Stone {number3}", "{number1}구역 · 골드 {number2} + 수호석 {number3}" },
+		{ "Tap again to put it in Slot {number1}", "한 번 더 누르면 칸 {number1}에 넣어요" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "적의 HP +{number1}%\n골드 +{number2}%" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 다크 캐슬 게이트 · 추천 수 {number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "저격 소총 · 신비로운 시대 +{number1}" },
@@ -946,11 +949,5 @@ return {
 		{ "🆕 New weapon: {text1} - press {number2}!", "🆕 새 무기: {text1} - {number2}를 누르세요!" },
 		{ "{text1} invited you to a party!", "{text1}님이 파티에 초대했어요!" },
 		{ "Recommended ⚡ {number1}   Danger {text2}", "권장 ⚡ {number1}   위험 {text2}" },
-		{ "  ·  next weapon: {text1} at +{number2}", "  ·  다음 무기: {text1} (+{number2}에서)" },
-		{ "🗿 {text1} · World Boss (Zone {number2})", "🗿 {text1} · 월드 보스 ({number2}구역)" },
-		{ "🐾 Unlock your pet! ({text1} G)", "🐾 펫을 열어 보세요! ({text1} G)" },
-		{ "Slots {number1} / {number2}   (💰 {text3} G · 🔷 {number4})", "칸 {number1} / {number2}   (💰 {text3} G · 🔷 {number4})" },
-		{ "👀 [{text1}] 5-second preview!", "👀 [{text1}] 5초 미리보기!" },
-		{ "💤 Idle income  +{text1} G/sec", "💤 방치 수입  +{text1} G/초" },
 	},
 }

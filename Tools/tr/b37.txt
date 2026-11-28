@@ -1,0 +1,5 @@
+3193¦下の宝石をタップで確認 · もう一度タップで枠{number1}に入れる¦Tippe unten auf ein Juwel zum Ansehen · nochmal tippen legt es in Slot {number1}¦Touche une gemme pour la voir · touche encore pour la mettre dans l'emplacement {number1}¦Toca una gema para verla · tócala otra vez para ponerla en la ranura {number1}¦Toque numa gema para ver · toque de novo para colocar no espaço {number1}¦点击下方宝石查看 · 再点一次放入槽位{number1}¦아래 보석을 누르면 설명 · 한 번 더 누르면 칸 {number1}에 넣기
+3194¦もう一度タップで枠{number1}に入れる¦Nochmal tippen legt es in Slot {number1}¦Touche encore pour la mettre dans l'emplacement {number1}¦Tócala otra vez para ponerla en la ranura {number1}¦Toque de novo para colocar no espaço {number1}¦再点一次放入槽位{number1}¦한 번 더 누르면 칸 {number1}에 넣어요
+3195¦6部位で👑覚醒¦6 Teile 👑 Erwachen¦6 pièces 👑 éveil¦6 piezas 👑 despertar¦6 peças 👑 despertar¦6件 👑觉醒¦6부위면 👑 각성
+3196¦最大2枠¦max. 2 Slots¦2 emplacements max¦máx. 2 ranuras¦máx. 2 espaços¦最多2格¦최대 2칸
+3197¦[AugSlotsUI] 読み込み失敗 — 出力を確認¦[AugSlotsUI] fehlgeschlagen — siehe Ausgabe¦[AugSlotsUI] échec — voir la sortie¦[AugSlotsUI] falló — mira la salida¦[AugSlotsUI] falhou — veja a saída¦[AugSlotsUI] 加载失败 — 请查看输出¦[AugSlotsUI] 불러오기 실패 — 출력 창을 보세요

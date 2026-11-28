@@ -1080,6 +1080,9 @@ return {
 		["burning kills explode for 75% and spread the burn"] = "les ennemis en feu explosent à 75 % et propagent la brûlure",
 		["executions deal 75% to nearby enemies"] = "les exécutions infligent 75 % aux ennemis proches",
 		["4 small meteors fall after impact (75% total)"] = "4 petits météores tombent après l'impact (75 % au total)",
+		["6 pieces 👑 awakening"] = "6 pièces 👑 éveil",
+		["max 2 slots"] = "2 emplacements max",
+		["[AugSlotsUI] failed — see Output"] = "[AugSlotsUI] échec — voir la sortie",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Quêtes quotidiennes\nTerminez {number1} donjon(s) ✅ appuyez pour réclamer !\nRéussissez {number2} améliorations ✅, appuyez pour réclamer !\nUtilisez {number3} points de statistiques (touche T / bouton Statistiques) ✅ cliquez pour réclamer !\nOuvrez la fenêtre des animaux de compagnie (touche P / Croissance > Animaux de compagnie) ✅ appuyez pour réclamer !" },
@@ -1147,6 +1150,5 @@ return {
 		{ "Mythic Master   Title 『Mythic Master』\nObtain Mythic gear\n{number1} / {number2}   Reward: 🎫 {number3}", "Titre de maître mythique\nObtenez de l'équipement mythique\n{number1} / {number2} Récompense : 🎫 {number3}" },
 		{ "Dummy Slayer   Title 『Dummy Slayer』\nHit the dummy {number1} times\n{number2} / {number3}   Reward: {number4} G", "Titre du tueur de mannequins : 『Tueur de mannequins』\nFrappez le mannequin {number1} fois\n{number2} / {number3} Récompense : {number4} G" },
 		{ "A golden FEVER portal opened where the Lord fell! Step in within {number1} seconds", "Un portail FIÈVRE doré s'est ouvert là où le Seigneur est tombé ! Entrez dans les {number1} secondes" },
-		{ "Points left {number1}  /  total {number2}  (Level {number3})  ·  +1 point every {number4} levels, next at Lv.{number5}", "Points restants {number1}  /  total {number2}  (Niveau {number3})  ·  +1 point tous les {number4} niveaux, prochain au Niv.{number5}" },
 	},
 }

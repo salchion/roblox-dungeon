@@ -959,6 +959,9 @@ return {
 		["burning kills explode for 75% and spread the burn"] = "燃烧中的敌人被击杀时爆炸75%并扩散灼烧",
 		["executions deal 75% to nearby enemies"] = "处决时对周围敌人造成75%",
 		["4 small meteors fall after impact (75% total)"] = "落地后再落下4颗小陨石（共75%）",
+		["6 pieces 👑 awakening"] = "6件 👑觉醒",
+		["max 2 slots"] = "最多2格",
+		["[AugSlotsUI] failed — see Output"] = "[AugSlotsUI] 加载失败 — 请查看输出",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 每日任务\n通关{number1}个地下城 ✅ 点击领取！\n成功升级{number2}次 ✅ 点击领取！\n花费{number3}属性点（T键/属性按钮）✅点击领取！\n打开宠物窗口（按P键/成长>宠物）✅点击领取！" },
@@ -1074,6 +1077,7 @@ return {
 		{ "Sweep needs {number1} key(s). Defeat a field zone lord to get keys", "扫荡需要{number1}把钥匙。击败野外区域领主即可获得钥匙" },
 		{ "You can run {number1} effects at once. Turn another one off first", "最多可同时启用 {number1} 个效果。请先关闭另一个" },
 		{ "Town north gate · boss chest gear + gold · Free {number1} · Keys {number2}", "城镇北门 · 首领宝箱出装备和金币 · 免费 {number1} · 钥匙 {number2}" },
+		{ "Tap a gem below to see it · tap again to put it in Slot {number1}", "点击下方宝石查看 · 再点一次放入槽位{number1}" },
 		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "抽卡{number1} <font color='#{number2}aa{number3}c{number4}'>抽卡结果：史诗</font>" },
 		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "立即获得{number1}小时的闲置收入 · 每日上限为{number2}" },
 		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 区域 {number1} · 黑暗之地已封锁\n请先打开前一个大门" },
@@ -1165,8 +1169,5 @@ return {
 		{ "Auto-equipped the best gear in {number1} slot(s)!", "已为 {number1} 个栏位自动装备最佳装备!" },
 		{ "• About {number1} shots/sec · Firepower {number2} · Range {number3}", "• 约每秒 {number1} 发 · 火力 {number2} · 射程 {number3}" },
 		{ "Damage +{number1}% on a single target: for bosses", "单体伤害+{number1}%：适合首领" },
-		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "{number1}秒！奖励x{number2}，连击最高x{number3}！" },
-		{ "recover {number1}% of max HP per second in combat", "战斗中每秒回复最大生命的{number1}%" },
-		{ "🔓 You can now run {number1} set effects at once!", "🔓 现在可以同时启用 {number1} 个套装效果了!" },
 	},
 }

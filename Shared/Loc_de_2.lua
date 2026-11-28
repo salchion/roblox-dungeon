@@ -1025,6 +1025,9 @@ return {
 		["burning kills explode for 75% and spread the burn"] = "brennende Gegner explodieren beim Tod für 75 % und verbreiten den Brand",
 		["executions deal 75% to nearby enemies"] = "Hinrichtungen verursachen 75 % an Gegnern in der Nähe",
 		["4 small meteors fall after impact (75% total)"] = "nach dem Einschlag fallen 4 kleine Meteore (insgesamt 75 %)",
+		["6 pieces 👑 awakening"] = "6 Teile 👑 Erwachen",
+		["max 2 slots"] = "max. 2 Slots",
+		["[AugSlotsUI] failed — see Output"] = "[AugSlotsUI] fehlgeschlagen — siehe Ausgabe",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Tägliche Missionen\n{number1} Dungeons abschließen ✅ Tippen, um zu beanspruchen!\nErfolgreich {number2}-mal aufwerten ✅ Tippen, um zu beanspruchen!\nGib {number3} Statistikpunkte aus (T-Taste / Statistik-Button) ✅ Tippe, um sie zu erhalten!\nÖffne das Haustierfenster (P-Taste / Wachstum > Haustier) ✅ Tippe, um es zu beanspruchen!" },
@@ -1125,6 +1128,5 @@ return {
 		{ "♻ [Common] 🌾 Meadow Cloth Gloves auto-salvaged (Essence +{number1} {number2} G)", "♻ [Gewöhnlich] 🌾 Wiesenstoffhandschuhe automatisch gesammelt (Essenz +{number1} {number2} G)" },
 		{ "Powerhouse   Title 『Powerhouse』\nReach {number1} Power\n{number2} / {number3}   Reward: {number4} G", "Kraftzentrum-Titel 『Powerhouse』\nErreiche {number1} Kraft\n{number2} / {number3} Belohnung: {number4} G" },
 		{ "♻ [Common] 🌲 Forest Leather Cap auto-salvaged (Essence +{number1} {number2} G)", "♻ [Gewöhnlich] 🌲 Wald-Lederkappe automatisch gesammelt (Essenz +{number1} {number2} G)" },
-		{ "The final blast also explodes around every target (attack x{number1})", "Die Schlussexplosion detoniert auch um jedes Ziel (Angriff x{number1})" },
 	},
 }

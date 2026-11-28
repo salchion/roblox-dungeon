@@ -4,6 +4,12 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "  ·  next weapon: {text1} at +{number2}", "  ·  다음 무기: {text1} (+{number2}에서)" },
+		{ "🗿 {text1} · World Boss (Zone {number2})", "🗿 {text1} · 월드 보스 ({number2}구역)" },
+		{ "🐾 Unlock your pet! ({text1} G)", "🐾 펫을 열어 보세요! ({text1} G)" },
+		{ "Slots {number1} / {number2}   (💰 {text3} G · 🔷 {number4})", "칸 {number1} / {number2}   (💰 {text3} G · 🔷 {number4})" },
+		{ "👀 [{text1}] 5-second preview!", "👀 [{text1}] 5초 미리보기!" },
+		{ "💤 Idle income  +{text1} G/sec", "💤 방치 수입  +{text1} G/초" },
 		{ "{text1} is already in a party", "{text1} 님은 이미 파티에 있어요" },
 		{ "⚠ {text1} rising soon · Zone {number2}", "⚠ {text1} 곧 등장 · 구역 {number2}" },
 		{ "Next goal +{number1} · {text1} ({number2} left)", "다음 목표 +{number1} · {text1} ({number2}번 남음)" },

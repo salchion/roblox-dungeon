@@ -1205,6 +1205,9 @@ return {
 		["burning kills explode for 75% and spread the burn"] = "炎上中の撃破で75%の爆発＋炎上が広がる",
 		["executions deal 75% to nearby enemies"] = "処刑すると周囲の敵に75%",
 		["4 small meteors fall after impact (75% total)"] = "着弾後に小型隕石4個（合計75%）",
+		["6 pieces 👑 awakening"] = "6部位で👑覚醒",
+		["max 2 slots"] = "最大2枠",
+		["[AugSlotsUI] failed — see Output"] = "[AugSlotsUI] 読み込み失敗 — 出力を確認",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },

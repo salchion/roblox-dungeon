@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "🏅 Achievement unlocked! Reward: {text1}{text2}", "🏅 実績解除！報酬: {text1}{text2}" },
+		{ "Upgrade cost {text1} G · You have {text2} G", "強化費用 {text1} G · 所持 {text2} G" },
+		{ "📢 {text1}'s weapon evolved into [{text2}]!", "📢 {text1}の武器が[{text2}]に進化しました！" },
 		{ "✨ {number1}-piece set complete! {text2} {text3} Lv.{number4}", "✨ {number1}ピースセット完成！{text2} {text3} Lv.{number4}" },
 		{ "{text1} {text2} Tier · {number3} bosses defeated", "{text1} {text2}ティア · ボス{number3}体撃破" },
 		{ "⏱ {text1} survived  ×  💥 {text2} damage", "⏱ {text1} 生存  ×  💥 {text2} ダメージ" },

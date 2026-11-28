@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "The final blast also explodes around every target (attack x{number1})", "Die Schlussexplosion detoniert auch um jedes Ziel (Angriff x{number1})" },
 		{ "♻ [Common] 🌾 Meadow Worn Shoes auto-salvaged (Essence +{number1} {number2} G)", "♻ [Gewöhnlich] 🌾 Wiesen-Abgenutzte Schuhe automatisch eingesammelt (Essenz +{number1} {number2} G)" },
 		{ "🌟 Level {number1} breakthrough complete! You can grow even more now.", "🌟 Durchbruch auf Stufe {number1} abgeschlossen! Du kannst jetzt noch weiter wachsen." },
 		{ "🏰 Dungeon boss chest — {number1} gear pieces, +1 every {number2} depth (max {number3})", "🏰 Dungeon-Boss-Truhe – {number1} Ausrüstungsteile, +1 alle {number2} Tiefen (max. {number3})" },
@@ -18,6 +19,7 @@ return {
 		{ "Sweep needs {number1} key(s). Defeat a field zone lord to get keys", "Der Blitz braucht {number1} Schlüssel. Besiege einen Gebietslord, um Schlüssel zu bekommen" },
 		{ "You can run {number1} effects at once. Turn another one off first", "Du kannst {number1} Effekte gleichzeitig nutzen. Schalte zuerst einen anderen aus" },
 		{ "Town north gate · boss chest gear + gold · Free {number1} · Keys {number2}", "Nordtor der Stadt · Ausrüstung + Gold aus der Bosstruhe · Gratis {number1} · Schlüssel {number2}" },
+		{ "Tap a gem below to see it · tap again to put it in Slot {number1}", "Tippe unten auf ein Juwel zum Ansehen · nochmal tippen legt es in Slot {number1}" },
 		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "Gacha_Pop{number1} <font color='#{number2}aa{number3}c{number4}'>Gacha-Ergebnis: Episch</font>" },
 		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "Erhalte sofort {number1} Stunden deines passiven Einkommens · maximal {number2} pro Tag" },
 		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 Zone {number1} · Dunkle Länder versiegelt\nÖffne zuerst das vorherige Tor" },
@@ -247,6 +249,7 @@ return {
 		{ "Points left · next +1 at Lv.{number1}", "Übrige Punkte · nächster +1 bei St. {number1}" },
 		{ "Zone {number1} · Gold {number2} + Gear option {number3}", "Zone {number1} · Gold {number2} + Ausrüstungsoption {number3}" },
 		{ "Zone {number1} · Gold {number2} + Guard Stone {number3}", "Zone {number1} · Gold {number2} + Schutzstein {number3}" },
+		{ "Tap again to put it in Slot {number1}", "Nochmal tippen legt es in Slot {number1}" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "Gegner-HP +{number1}%\nGold +{number2}% stattdessen" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 Dunkles Schloss-Tor · Empfohlen ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "Scharfschützengewehr · Arkanische Ära +{number1}" },

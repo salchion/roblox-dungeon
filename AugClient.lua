@@ -77,13 +77,8 @@ end
 --   버튼을 항상 숨겨 둔(pill.Visible = false) 뒤라 화면에 한 번도 나오지 않는 죽은 코드였고,
 --   지금은 왼쪽 메뉴의 "🌟 Sets" 버튼이 빨간 점까지 맡는다 (MenuDockClient).
 
--- 창 모양: 왼쪽에 내 캐릭터가 서 있고 그 둘레에 구역 효과 8개가 원으로 둘러선다 (무협 RPG 장비창처럼).
--- 오른쪽 패널에 고른 효과의 설명 + 버튼. 한 화면에 다 들어와서 스크롤이 없다.
-local PANEL_W, PANEL_H = 1000, 600 -- (11-26: 소켓 3개 + 보석 후보 두 줄)
-local RING_CX, RING_CY = 250, 312 -- 원들이 둘러서는 중심 (= 캐릭터)
-local RING_RX, RING_RY = 172, 172
-local ORB = 66
-local BOX_X, BOX_W, BOX_H = 652, 332, 532
+-- 창 모양 (11-26): 위에 빛나는 원형 소켓 3개 + 설명 줄, 아래에 넣을 수 있는 효과 보석(공격 줄 / 방어 줄). 안쪽은 AugSlotsUI 가 그린다
+local PANEL_W, PANEL_H = 1000, 600
 
 local panel = make("Frame", {
 	Size = UDim2.new(0, PANEL_W, 0, PANEL_H), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0),
@@ -121,8 +116,11 @@ task.defer(fitPanel) -- (그 스크립트가 먼저 돌아 이미 붙어 있었�
 
 -- (11-25) 창 안쪽 = 칸 3개 + 후보 + 칸 강화 + 비교 카드: 별도 모듈 AugSlotsUI (이 파일이 20만 자를 넘지 않게)
 local okSlots, SlotsUI = pcall(function() return require(script.Parent:WaitForChild("AugSlotsUI")).Build(panel) end)
-if not okSlots then -- (창 안쪽에서 오류가 나도 Y 키 / 나머지 세트 효과 화면은 살아 있게: 오류는 출력 창에)
+if not okSlots then -- (창 안쪽에서 오류가 나도 Y 키 / 나머지 세트 효과 화면은 살아 있게: 오류는 출력 창에 + 창에도 한 줄)
 	warn("[AugSlotsUI] " .. tostring(SlotsUI))
+	label({ Size = UDim2.new(1, -40, 0, 60), Position = UDim2.new(0, 20, 0.5, -30), Text = "[AugSlotsUI] failed — see Output", TextSize = 18, Font = Enum.Font.GothamBlack,
+		TextColor3 = Color3.fromRGB(255, 140, 140), TextWrapped = true }, panel)
+	button({ Size = UDim2.new(0, 76, 0, 32), Position = UDim2.new(1, -92, 0, 12), BackgroundColor3 = Color3.fromRGB(58, 42, 18), Text = "Close", TextSize = 13 }, panel, function() panel.Visible = false end)
 	SlotsUI = { Refresh = function() end, Focus = function() end }
 end
 
@@ -160,58 +158,7 @@ task.spawn(function()
 	end)
 end)
 
-------------------------------------------------------------
--- 켜 둔 세트 효과 상태창: 필드 / 던전에서 오른쪽 위에 작게 (효과 이름 + 현재 몇 단계인지, 골드 단계 + 장비 단계)
-------------------------------------------------------------
--- 켜 둔 세트 효과 카드 (오른쪽 위): 효과마다 한 줄 = 색 아이콘 + 이름 + 단계 점(노랑 = 골드 단계, 하늘 = 장비 단계) + 큰 "Lv.N".
--- 방금 발동한 효과는 줄이 환하게 켜진다 (예전: 작은 글자 한 덩어리라 잘 안 보였다)
-local hudBox = make("Frame", {
-	Size = UDim2.new(0, 244, 0, 40), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 176),
-	BackgroundColor3 = Color3.fromRGB(20, 22, 36), BackgroundTransparency = 0.1, BorderSizePixel = 0, Visible = false, ZIndex = 3,
-}, gui)
-make("UICorner", { CornerRadius = UDim.new(0, 12) }, hudBox)
-local hudStroke = make("UIStroke", { Color = Color3.fromRGB(255, 205, 120), Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Transparency = 0.25 }, hudBox)
-label({ Size = UDim2.new(1, -16, 0, 22), Position = UDim2.new(0, 12, 0, 4), Text = "🌟 Set Effects", TextSize = 13, Font = Enum.Font.GothamBlack, TextColor3 = Color3.fromRGB(255, 218, 120), TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4 }, hudBox)
-local hudRows = {}
-
-local procUntil = {} -- 효과 이름 -> 이 시각까지 "방금 발동" 표시
-local function refreshHud()
-	local zone = player:GetAttribute("Zone")
-	for _, row in ipairs(hudRows) do row:Destroy() end
-	hudRows = {}
-	local y, count = 28, 0
-	for z = 1, ZONES do
-		if player:GetAttribute("AugOnZ_" .. z) == true then
-			count += 1
-			local attr = Config.Sets.ZoneAug[z]
-			local info = Config.AugInfo[attr]
-			local gold = player:GetAttribute("AugLvZ_" .. z) or 0
-			local gear = player:GetAttribute("AugGearZ_" .. z) or 0
-			local fired = (procUntil[attr] or 0) > os.clock() -- 방금 발동한 효과는 줄이 환하게 켜진다
-			local row = make("Frame", {
-				Size = UDim2.new(1, -12, 0, 36), Position = UDim2.new(0, 6, 0, y), BorderSizePixel = 0, ZIndex = 4,
-				BackgroundColor3 = info.Color:Lerp(Color3.fromRGB(20, 22, 36), fired and 0.35 or 0.74),
-			}, hudBox)
-			make("UICorner", { CornerRadius = UDim.new(0, 9) }, row)
-			make("UIStroke", { Color = fired and Color3.new(1, 1, 1) or info.Color, Thickness = fired and 2.5 or 1.4, Transparency = fired and 0 or 0.35, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, row)
-			label({ Size = UDim2.new(0, 34, 1, 0), Position = UDim2.new(0, 2, 0, 0), Text = info.Icon, TextSize = 21, ZIndex = 5 }, row)
-			label({ Size = UDim2.new(1, -100, 0, 18), Position = UDim2.new(0, 38, 0, 3), Text = info.Name, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd,
-				TextColor3 = fired and Color3.fromRGB(255, 255, 140) or Color3.new(1, 1, 1), ZIndex = 5 }, row)
-			local pips = {}
-			for i = 1, 6 do
-				local color = i <= gold and "#ffd966" or (i <= gold + gear and "#8fe0ff" or "#566080")
-				pips[i] = string.format("<font color='%s'>%s</font>", color, i <= gold + gear and "●" or "○")
-			end
-			label({ Size = UDim2.new(1, -100, 0, 14), Position = UDim2.new(0, 38, 0, 20), Text = table.concat(pips, " "), RichText = true, TextSize = 10, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5 }, row)
-			label({ Size = UDim2.new(0, 56, 1, 0), Position = UDim2.new(1, -60, 0, 0), Text = "Lv." .. (gold + gear), TextSize = 18, Font = Enum.Font.GothamBlack,
-				TextColor3 = Color3.fromRGB(150, 230, 255), TextStrokeTransparency = 0.5, ZIndex = 5 }, row)
-			table.insert(hudRows, row)
-			y += 40
-		end
-	end
-	hudBox.Visible = false -- (오른쪽 위 "세트 효과" 목록은 뺐다: 머리 위 메달이 발동을 보여 준다. 자세한 건 세트 창에서)
-	hudBox.Size = UDim2.new(0, 244, 0, y + 4)
-end
+-- (11-28) 오른쪽 위 "켜 둔 세트 효과" 목록(hudBox / refreshHud)은 지웠다: 늘 숨겨 둔 채 속성이 바뀔 때마다 줄을 다시 만들기만 했다. 발동은 머리 위 메달이 보여 준다
 -- 머리 위 세트 효과 메달: 장착한 세트 효과가 내 머리 위에 작은 메달로 늘 보이고, 터지는 순간 그 메달만 커지며 빛나고 이름 리본이 잠깐 뜬다
 --   (예전: 맞은 자리 아이콘 / 화면 가운데 글자 / 오른쪽 위 목록이 따로 깜빡여서 무엇이 터졌는지 눈에 안 들어왔다). 내 화면에만 보인다
 local Kit = require(ReplicatedStorage:WaitForChild("ClientKit"))
@@ -281,11 +228,6 @@ player.CharacterAdded:Connect(function(character)
 end)
 refreshHead()
 
-for _, name in ipairs({ "Zone", "TutorialActive" }) do player:GetAttributeChangedSignal(name):Connect(refreshHud) end
-for z = 1, ZONES do
-	for _, prefix in ipairs({ "AugOnZ_", "AugLvZ_", "AugGearZ_" }) do player:GetAttributeChangedSignal(prefix .. z):Connect(refreshHud) end
-end
-refreshHud()
 
 ------------------------------------------------------------
 -- 던전 시작 체험 효과: 8개 중 하나를 뽑는 연출(약 2.5초) -> 화면 오른쪽 위 구석에 작은 표시
@@ -536,20 +478,11 @@ local function showProc(attr, position)
 		end
 	end
 	if headBoard.Enabled and headMedals[attr] then -- 오른쪽 위 목록만 잠깐 켠다
-		procUntil[attr] = os.clock() + 0.5
-		refreshHud()
-		task.delay(0.55, refreshHud)
 		return
 	end
 	if os.clock() - lastProcPop < 1.4 then return end -- 화면 가운데 "충격파 샷!" 같은 글자는 1.4초에 한 번만 (세트 효과가 계속 터져서 글자가 쉴 새 없이 떴다. 효과 자체의 연출은 그대로)
 	lastProcPop = os.clock()
 	if player:GetAttribute("ModalOpen") then return end -- 메뉴 같은 큰 창이 열려 있으면 화면 가운데 글자를 띄우지 않는다 (창 위에 겹쳐 보였다)
-	procUntil[attr] = os.clock() + 0.5
-	refreshHud()
-	task.delay(0.55, refreshHud)
-	hudStroke.Thickness = 3
-	hudStroke.Transparency = 0
-	TweenService:Create(hudStroke, TweenInfo.new(0.5), { Thickness = 2, Transparency = 0.25 }):Play()
 	if not firstProcTaught and player:GetAttribute("TutorialDungeonRun") == true and attr == player:GetAttribute("AugDemo") then
 		-- 처음 체험한 세트 효과가 처음 터진 순간: "방금 그게 세트 효과" 라고 한 번만 짚어 준다 (보고 배운다)
 		firstProcTaught = true

@@ -71,7 +71,7 @@ local function badge(parent, props)
 end
 
 function UI.Build(panel)
-	local selectedSlot, showLocked = 1, false
+	local selectedSlot, showLocked, preview = 1, false, nil -- (preview: 아래 보석을 한 번 누르면 설명 줄에 미리 보이고, 한 번 더 누르면 고른 칸에 들어간다)
 	local W = panel.Size.X.Offset > 0 and panel.Size.X.Offset or 1000
 
 	text({ Size = UDim2.new(0, 260, 0, 34), Position = UDim2.new(0, 20, 0, 10), Text = "🌟 Set Effects", TextSize = 22, Font = Enum.Font.GothamBlack, TextColor3 = CREAM, TextXAlignment = Enum.TextXAlignment.Left }, panel)
@@ -105,7 +105,7 @@ function UI.Build(panel)
 		local upStroke = make("UIStroke", { Color = Color3.fromRGB(184, 255, 191), Thickness = 2 }, up)
 		up.Activated:Connect(function() Remotes.Aug:FireServer("SlotUp", i) end)
 		local pick = make("TextButton", { Size = UDim2.new(0, RING, 0, RING), Position = UDim2.new(0.5, -RING / 2, 0, 0), BackgroundTransparency = 1, Text = "", ZIndex = 7 }, holder)
-		pick.Activated:Connect(function() selectedSlot = i UI.Refresh() end)
+		pick.Activated:Connect(function() selectedSlot = i preview = nil UI.Refresh() end)
 		local clear = make("TextButton", { Size = UDim2.new(0, 26, 0, 26), Position = UDim2.new(0.5, -RING / 2 - 4, 0, -2), BackgroundColor3 = Color3.fromRGB(122, 32, 48), Text = "✕", TextSize = 12,
 			Font = Enum.Font.GothamBlack, TextColor3 = Color3.new(1, 1, 1), ZIndex = 9 }, holder)
 		round(clear)
@@ -114,19 +114,37 @@ function UI.Build(panel)
 		sockets[i] = { Ring = ring, Stroke = ringStroke, Icon = ringIcon, Glow = glow, Plus = plus, Lv = lv, Pips = pips, Name = name, Src = src, Goal = goal, Up = up, UpStroke = upStroke, Clear = clear }
 	end
 
-	make("Frame", { Size = UDim2.new(1, -40, 0, 2), Position = UDim2.new(0, 20, 0, 348), BackgroundColor3 = GOLD, BackgroundTransparency = 0.6, BorderSizePixel = 0, ZIndex = 3 }, panel)
+	-- 설명 줄: 고른 소켓(또는 미리 보는 보석)의 효과 설명 + 👑 각성 설명
+	local info = make("Frame", { Size = UDim2.new(1, -40, 0, 44), Position = UDim2.new(0, 20, 0, 326), BackgroundColor3 = Color3.fromRGB(16, 12, 22), BackgroundTransparency = 0.25, BorderSizePixel = 0, ZIndex = 3 }, panel)
+	round(info, 12)
+	make("UIStroke", { Color = GOLD, Thickness = 1, Transparency = 0.5 }, info)
+	local infoIcon = text({ Size = UDim2.new(0, 40, 1, 0), Position = UDim2.new(0, 4, 0, 0), Text = "", TextSize = 24, TextXAlignment = Enum.TextXAlignment.Center }, info)
+	local infoLine1 = text({ Size = UDim2.new(1, -190, 0, 20), Position = UDim2.new(0, 48, 0, 3), Text = "", TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, info)
+	local infoLine2 = text({ Size = UDim2.new(1, -190, 0, 18), Position = UDim2.new(0, 48, 0, 23), Text = "", TextSize = 12, TextColor3 = MUTED, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd }, info)
+	local putButton = make("TextButton", { Size = UDim2.new(0, 128, 0, 30), Position = UDim2.new(1, -136, 0.5, -15), BackgroundColor3 = Color3.fromRGB(201, 138, 58), Text = "", TextSize = 13,
+		Font = Enum.Font.GothamBlack, TextColor3 = Color3.new(1, 1, 1), Visible = false, ZIndex = 6 }, info)
+	round(putButton, 15)
+	make("UIStroke", { Color = GOLD_HI, Thickness = 2 }, putButton)
+	putButton.Activated:Connect(function()
+		if preview then Remotes.Aug:FireServer("Slot", selectedSlot, preview) preview = nil end
+	end)
+
+	make("Frame", { Size = UDim2.new(1, -40, 0, 2), Position = UDim2.new(0, 20, 0, 376), BackgroundColor3 = GOLD, BackgroundTransparency = 0.6, BorderSizePixel = 0, ZIndex = 3 }, panel)
 
 	-- 후보: 공격 줄 / 방어 줄 (보석) + 잠긴 효과 한 줄
 	local rows = {}
 	for k, key in ipairs({ "Attack", "Defense" }) do
-		local y = 360 + (k - 1) * 96
-		text({ Size = UDim2.new(0, 80, 0, 56), Position = UDim2.new(0, 20, 0, y), Text = key == "Attack" and "⚔ Attack" or "🛡 Defense", TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = CREAM, TextXAlignment = Enum.TextXAlignment.Left }, panel)
-		local row = make("Frame", { Size = UDim2.new(1, -130, 0, 92), Position = UDim2.new(0, 110, 0, y), BackgroundTransparency = 1, ZIndex = 3 }, panel)
+		local y = 384 + (k - 1) * 88
+		text({ Size = UDim2.new(0, 86, 0, 40), Position = UDim2.new(0, 20, 0, y + 6), Text = key == "Attack" and "⚔ Attack" or "🛡 Defense", TextSize = 14, Font = Enum.Font.GothamBlack, TextColor3 = CREAM, TextXAlignment = Enum.TextXAlignment.Left }, panel)
+		if key == "Defense" then -- (방어는 최대 2칸: 3번째를 넣으려 해야 알던 규칙을 화면에)
+			text({ Size = UDim2.new(0, 86, 0, 16), Position = UDim2.new(0, 20, 0, y + 42), Text = "max 2 slots", TextSize = 11, TextColor3 = Color3.fromRGB(255, 184, 77), TextXAlignment = Enum.TextXAlignment.Left }, panel)
+		end
+		local row = make("Frame", { Size = UDim2.new(1, -130, 0, 86), Position = UDim2.new(0, 110, 0, y), BackgroundTransparency = 1, ZIndex = 3 }, panel)
 		make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, row)
 		local empty = text({ Size = UDim2.new(0, 400, 0, 56), Text = "", TextSize = 12, TextColor3 = DIM, TextXAlignment = Enum.TextXAlignment.Left, Visible = false }, row)
 		rows[key] = { Row = row, Empty = empty }
 	end
-	local lockRow = make("TextButton", { Size = UDim2.new(1, -40, 0, 30), Position = UDim2.new(0, 20, 0, 556), BackgroundTransparency = 1, Text = "", ZIndex = 4 }, panel)
+	local lockRow = make("TextButton", { Size = UDim2.new(1, -40, 0, 26), Position = UDim2.new(0, 20, 0, 564), BackgroundTransparency = 1, Text = "", ZIndex = 4 }, panel)
 	make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder }, lockRow)
 	lockRow.Activated:Connect(function() showLocked = not showLocked UI.Refresh() end)
 
@@ -137,7 +155,7 @@ function UI.Build(panel)
 		local info = infoOf(z)
 		local level = attr("AugGearZ_" .. z) or 0
 		local def = isDefense(z)
-		local cell = make("Frame", { Size = UDim2.new(0, 82, 0, 92), BackgroundTransparency = 1, LayoutOrder = order, ZIndex = 4 }, parent)
+		local cell = make("Frame", { Size = UDim2.new(0, 82, 0, 86), BackgroundTransparency = 1, LayoutOrder = order, ZIndex = 4 }, parent)
 		local o, stroke, icon, grad = orb(cell, 52, { Position = UDim2.new(0.5, -26, 0, 2) })
 		icon.Text = info.Icon
 		o.BackgroundColor3 = def and Color3.fromRGB(26, 52, 84) or Color3.fromRGB(96, 60, 30)
@@ -162,7 +180,19 @@ function UI.Build(panel)
 		end
 		text({ Size = UDim2.new(1, 10, 0, 12), Position = UDim2.new(0, -5, 0, 75), Text = sub, TextSize = 9, TextColor3 = MUTED, TextTruncate = Enum.TextTruncate.AtEnd }, cell)
 		local hit = make("TextButton", { Size = UDim2.new(0, 52, 0, 52), Position = UDim2.new(0.5, -26, 0, 2), BackgroundTransparency = 1, Text = "", ZIndex = 8 }, cell)
-		hit.Activated:Connect(function() if level > 0 then Remotes.Aug:FireServer("Slot", selectedSlot, z) end end)
+		if preview == z then stroke.Color = GOLD_HI stroke.Thickness = 4 end
+		hit.Activated:Connect(function() -- 한 번 = 설명 보기, 같은 보석 한 번 더 = 고른 칸에 넣기
+			if preview == z and level > 0 then
+				preview = nil
+				Remotes.Aug:FireServer("Slot", selectedSlot, z)
+			else
+				preview = z
+				UI.Refresh()
+			end
+		end)
+		hit.MouseEnter:Connect(function() -- (PC: 올리기만 해도 설명 줄에)
+			if preview ~= z then preview = z UI.Refresh() end
+		end)
 		if def then -- 🔷 수호석 단계 올리기 (마을)
 			local need = Config.Guard.StoneCost[(attr("AugStoneZ_" .. z) or 0) + 1]
 			if need then
@@ -238,6 +268,36 @@ function UI.Build(panel)
 				s.Up.Text = string.format("🔨 +%d · 💰 %s", lv + 1, commas(cost))
 				s.Up.BackgroundColor3 = ok and Color3.fromRGB(70, 180, 82) or Color3.fromRGB(70, 74, 92)
 				s.UpStroke.Color = ok and Color3.fromRGB(184, 255, 191) or Color3.fromRGB(120, 110, 140)
+			end
+		end
+		-- 설명 줄
+		if preview and inSlot(preview) then preview = nil end
+		local z = preview or slotZone(selectedSlot)
+		local zi = z > 0 and infoOf(z)
+		putButton.Visible = false
+		if not zi then
+			infoIcon.Text = "💡"
+			infoLine1.Text = string.format("Tap a gem below to see it · tap again to put it in Slot %d", selectedSlot)
+			infoLine2.Text = ""
+		else
+			local level = attr("AugGearZ_" .. z) or 0
+			local aw = attr("AugAwakeZ_" .. z) == true and Config.AugAwaken[Config.Sets.ZoneAug[z]]
+			infoIcon.Text = zi.Icon
+			infoLine1.Text = string.format("<b>%s</b>  <font color='#d8cce8'>%s</font>", zi.Name, zi.Desc or "")
+			if aw then
+				infoLine2.Text = "<font color='#ff9be6'>" .. string.format("👑 Awakening: %s", aw.Name) .. "</font>  " .. aw.Desc
+			elseif level <= 0 then
+				infoLine2.Text = isDefense(z) and "Collect Guard Stones" or "Wear 2 set pieces"
+			elseif preview then
+				infoLine2.Text = string.format("Tap again to put it in Slot %d", selectedSlot)
+			elseif not isDefense(z) then
+				infoLine2.Text = "<font color='#9a8ab8'>" .. "6 pieces 👑 awakening" .. "</font>"
+			else
+				infoLine2.Text = ""
+			end
+			if preview and level > 0 then
+				putButton.Visible = true
+				putButton.Text = string.format("⬆ Slot %d", selectedSlot)
 			end
 		end
 		-- 후보 보석

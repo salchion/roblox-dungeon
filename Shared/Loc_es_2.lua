@@ -1077,6 +1077,9 @@ return {
 		["burning kills explode for 75% and spread the burn"] = "los enemigos en llamas explotan al 75 % y propagan la quemadura",
 		["executions deal 75% to nearby enemies"] = "las ejecuciones hacen un 75 % a enemigos cercanos",
 		["4 small meteors fall after impact (75% total)"] = "caen 4 meteoros pequeños tras el impacto (75 % en total)",
+		["6 pieces 👑 awakening"] = "6 piezas 👑 despertar",
+		["max 2 slots"] = "máx. 2 ranuras",
+		["[AugSlotsUI] failed — see Output"] = "[AugSlotsUI] falló — mira la salida",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 Misiones diarias\nCompleta {number1} mazmorras ✅ ¡toca para reclamar!\n¡Ten éxito al mejorar {number2} veces ✅ toca para reclamar!\nGasta {number3} puntos de estadísticas (tecla T / botón de estadísticas) ✅ ¡toca para reclamar!\nAbre la ventana de mascotas (tecla P / Crecimiento > Mascota) ✅ ¡toca para reclamar!" },

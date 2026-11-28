@@ -4,6 +4,7 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "Points left {number1}  /  total {number2}  (Level {number3})  ·  +1 point every {number4} levels, next at Lv.{number5}", "Points restants {number1}  /  total {number2}  (Niveau {number3})  ·  +1 point tous les {number4} niveaux, prochain au Niv.{number5}" },
 		{ "🎟 {number1} free entries today · 🗝 {number2} keys!\nChallenge the dungeon at the north gate", "🎟 {number1} entrées gratuites aujourd'hui · 🗝 {number2} clés !\nDéfiez le donjon à la porte du nord" },
 		{ "Unique effects found {number1} / {number2}  ·  Mythic gear can carry one (about {number3}% chance)", "Effets uniques trouvés {number1} / {number2}  ·  L'équipement mythique peut en porter un (environ {number3} % de chance)" },
 		{ "🎒 Bag full: dismantled {number1} gear that your other gear beats (Essence +{number2}, {number3} G)", "🎒 Sac plein : {number1} équipement(s) moins bon(s) recyclé(s) (Essence +{number2}, {number3} G)" },
@@ -51,6 +52,7 @@ return {
 		{ "Sweep needs {number1} key(s). Defeat a field zone lord to get keys", "Le balayage nécessite {number1} clé(s). Bats un seigneur de zone du terrain pour en obtenir" },
 		{ "You can run {number1} effects at once. Turn another one off first", "Vous pouvez activer {number1} effets à la fois. Désactivez-en d'abord un autre" },
 		{ "Town north gate · boss chest gear + gold · Free {number1} · Keys {number2}", "Porte nord de la ville · équipement + or du coffre du boss · Gratuit {number1} · Clés {number2}" },
+		{ "Tap a gem below to see it · tap again to put it in Slot {number1}", "Touche une gemme pour la voir · touche encore pour la mettre dans l'emplacement {number1}" },
 		{ "Gacha_Pop{number1}  <font color='#{number2}aa{number3}c{number4}'>Gacha result: Epic</font>", "Résultat de Gacha_Pop{number1} <font color='#{number2}aa{number3}c{number4}'> : Épique</font>" },
 		{ "Instantly get {number1} hours of YOUR idle income · max {number2} per day", "Obtenez instantanément {number1} heures de revenus passifs · maximum {number2} par jour" },
 		{ "🔒 Zone {number1} · Darklands Sealed\nOpen the previous gate first", "🔒 Zone {number1} · Terres sombres scellées\nOuvrez d'abord la porte précédente" },
@@ -279,6 +281,7 @@ return {
 		{ "Points left · next +1 at Lv.{number1}", "Points restants · prochain +1 au Nv.{number1}" },
 		{ "Zone {number1} · Gold {number2} + Gear option {number3}", "Zone {number1} · Or {number2} + option d'équipement {number3}" },
 		{ "Zone {number1} · Gold {number2} + Guard Stone {number3}", "Zone {number1} · Or {number2} + Pierre de garde {number3}" },
+		{ "Tap again to put it in Slot {number1}", "Touche encore pour la mettre dans l'emplacement {number1}" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "PV de l'ennemi +{number1}%\nOr +{number2}% à la place" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 Porte du château sombre · Recommandé ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "Fusil de sniper · Ère arcanique +{number1}" },

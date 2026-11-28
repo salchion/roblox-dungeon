@@ -1,5 +1,5 @@
 3183¦不明なセットです。¦Unbekanntes Set.¦Set inconnu.¦Set desconocido.¦Set desconhecido.¦未知套装。¦알 수 없는 세트예요.
-3184¦エリア {number1}¦ZONE {number1}¦ZONE {number1}¦ZONA {number1}¦ZONA {number1}¦区域 {number1}¦{number1}구역
+3184¦ゾーン {number1}¦Zone {number1}¦Zone {number1}¦Zona {number1}¦Zona {number1}¦区域 {number1}¦구역 {number1}
 3185¦1秒後、同じ場所に75%の衝撃波¦1 s später trifft eine 75-%-Schockwelle dieselbe Stelle¦1 s plus tard, une onde de choc à 75 % frappe le même endroit¦1 s después, una onda de choque del 75 % golpea el mismo punto¦1 s depois, uma onda de choque de 75% atinge o mesmo ponto¦1秒后同一位置再来一道75%冲击波¦1초 뒤 같은 자리에 75% 충격파
 3186¦跳ねるたびに破片が飛び散る（合計75%）¦jeder Abpraller verstreut Splitter (insgesamt 75 %)¦chaque rebond projette des éclats (75 % au total)¦cada rebote dispersa fragmentos (75 % en total)¦cada ricochete espalha estilhaços (75% no total)¦每次弹射散出碎片（共75%）¦튕길 때마다 파편 (합계 75%)
 3187¦3秒ごとに敵3体へ落雷（合計75%）¦alle 3 s treffen Blitze 3 Gegner (insgesamt 75 %)¦toutes les 3 s, des éclairs frappent 3 ennemis (75 % au total)¦cada 3 s, rayos golpean a 3 enemigos (75 % en total)¦a cada 3 s, raios atingem 3 inimigos (75% no total)¦每3秒落雷打击3个敌人（共75%）¦3초마다 적 3마리에 낙뢰 (합계 75%)

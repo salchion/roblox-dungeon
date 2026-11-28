@@ -4,6 +4,9 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}!", "{number1}秒！奖励x{number2}，连击最高x{number3}！" },
+		{ "recover {number1}% of max HP per second in combat", "战斗中每秒回复最大生命的{number1}%" },
+		{ "🔓 You can now run {number1} set effects at once!", "🔓 现在可以同时启用 {number1} 个套装效果了!" },
 		{ "🛡 Knocked back! Power {number1} required (you: {number2})", "🛡 被击退了!需要战力 {number1}(你:{number2})" },
 		{ "💚 Emergency rescue! HP restored ({number1} left)", "💚 紧急救援!生命已恢复(剩余 {number1} 次)" },
 		{ "{number1} seconds! Rewards x{number2}, combo adds up to x{number3}", "{number1}秒！奖励 x{number2}，连击最多 x{number3}" },
@@ -140,6 +143,7 @@ return {
 		{ "Points left · next +1 at Lv.{number1}", "剩余点数 · 下一点在Lv.{number1}" },
 		{ "Zone {number1} · Gold {number2} + Gear option {number3}", "{number1}区 · 金币 {number2} + 装备词条 {number3}" },
 		{ "Zone {number1} · Gold {number2} + Guard Stone {number3}", "{number1}区 · 金币 {number2} + 守护石 {number3}" },
+		{ "Tap again to put it in Slot {number1}", "再点一次放入槽位{number1}" },
 		{ "Enemy HP +{number1}%\nGold +{number2}% instead", "敌人生命值+{number1}%\n黄金 +{number2}%" },
 		{ "🦇 Dark Castle Gate · Rec. ⚡{number2}", "🦇 黑暗城堡之门 · 推荐 ⚡{number2}" },
 		{ "Sniper Rifle · Arcane Era +{number1}", "狙击步枪 · 秘法时代 +{number1}" },
