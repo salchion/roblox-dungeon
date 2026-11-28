@@ -120,7 +120,11 @@ end)
 task.defer(fitPanel) -- (그 스크립트가 먼저 돌아 이미 붙어 있었어도 한 번 더: 부딪히는 순서에 기대지 않는다)
 
 -- (11-25) 창 안쪽 = 칸 3개 + 후보 + 칸 강화 + 비교 카드: 별도 모듈 AugSlotsUI (이 파일이 20만 자를 넘지 않게)
-local SlotsUI = require(script.Parent:WaitForChild("AugSlotsUI")).Build(panel)
+local okSlots, SlotsUI = pcall(function() return require(script.Parent:WaitForChild("AugSlotsUI")).Build(panel) end)
+if not okSlots then -- (창 안쪽에서 오류가 나도 Y 키 / 나머지 세트 효과 화면은 살아 있게: 오류는 출력 창에)
+	warn("[AugSlotsUI] " .. tostring(SlotsUI))
+	SlotsUI = { Refresh = function() end, Focus = function() end }
+end
 
 panel:GetPropertyChangedSignal("Visible"):Connect(function()
 	if panel.Visible and not player:GetAttribute("HintDone_SetsOpened") then

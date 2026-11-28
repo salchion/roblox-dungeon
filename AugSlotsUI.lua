@@ -61,10 +61,12 @@ local function orb(parent, size, props)
 	return o, stroke, icon, grad
 end
 local function badge(parent, props)
+	local strokeColor = props.Stroke
+	props.Stroke = nil -- (TextLabel 에 없는 속성: 그대로 넣으면 오류로 창 전체가 안 만들어졌다)
 	local b = text(props, parent)
 	b.BackgroundTransparency = 0
 	round(b, 9)
-	make("UIStroke", { Color = props.Stroke or GOLD, Thickness = 1.5 }, b)
+	make("UIStroke", { Color = strokeColor or GOLD, Thickness = 1.5 }, b)
 	return b
 end
 
