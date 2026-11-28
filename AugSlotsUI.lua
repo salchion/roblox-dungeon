@@ -5,12 +5,14 @@
 --   값은 서버(AugService)가 채우는 Attribute 만 읽고, 바꾸는 것은 Remotes.Aug "Slot" / "SlotUp" / "Stone" 으로 보낸다.
 
 local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local Remotes = require(ReplicatedStorage:WaitForChild("Remotes"))
 
 local player = Players.LocalPlayer
+local hoverPreview = not (UIS.TouchEnabled and not UIS.MouseEnabled) -- (마우스가 있는 기기에서만 마우스 올리기 미리 보기)
 local S = Config.AugSlots
 local ZONES = #Config.Sets.ZoneAug
 local GOLD = Color3.fromRGB(201, 162, 74)
@@ -144,6 +146,7 @@ function UI.Build(panel)
 	local function slotZone(i) return attr("AugSlotZ_" .. i) or 0 end
 	local function inSlot(z) for i = 1, S.Count do if slotZone(i) == z then return i end end return nil end
 
+	local refreshInfo -- (아래에서 정의: 보석 버튼이 부른다)
 	local function gem(parent, z, order)
 		local info = infoOf(z)
 		local level = attr("AugGearZ_" .. z) or 0
@@ -176,12 +179,14 @@ function UI.Build(panel)
 		if preview == z then stroke.Color = GOLD_HI stroke.Thickness = 4 end
 		hit.Activated:Connect(function() -- (11-28) 폰 / PC 모두 한 번 누르면 바로 고른 칸에. 못 넣는 효과(레벨 0)는 설명만 보여 준다
 			preview = z
-			if level > 0 then Remotes.Aug:FireServer("Slot", selectedSlot, z) end -- (들어가면 preview 는 칸에 든 효과가 되어 설명 줄이 그 효과를 그대로 보여 준다)
-			UI.Refresh()
+			if level > 0 then Remotes.Aug:FireServer("Slot", selectedSlot, z) end -- (들어가면 서버 속성이 바뀌어 전체 Refresh 가 따로 돈다: 그때 설명 줄은 칸에 든 그 효과)
+			refreshInfo()
 		end)
-		hit.MouseEnter:Connect(function() -- (PC: 올리기만 해도 설명 줄에)
-			if preview ~= z then preview = z UI.Refresh() end
-		end)
+		if hoverPreview then -- (PC 만: 폰은 탭 시작 때 MouseEnter 가 먼저 와서, 여기서 다시 그리면 누르고 있는 버튼이 지워져 Activated 가 안 왔다)
+			hit.MouseEnter:Connect(function()
+				if preview ~= z then preview = z refreshInfo() end
+			end)
+		end
 		if def then -- 🔷 수호석 단계 올리기 (마을)
 			local need = Config.Guard.StoneCost[(attr("AugStoneZ_" .. z) or 0) + 1]
 			if need then
@@ -191,6 +196,34 @@ function UI.Build(panel)
 				round(sb, 9)
 				make("UIStroke", { Color = Color3.fromRGB(159, 192, 255), Thickness = 1.5 }, sb)
 				sb.Activated:Connect(function() Remotes.Aug:FireServer("Stone", z) end)
+			end
+		end
+	end
+
+	-- 설명 줄만 다시 쓴다 (보석 / 소켓 버튼은 그대로 둔다: 누르고 있는 버튼을 지우지 않게)
+	refreshInfo = function()
+		if preview and inSlot(preview) then preview = nil end
+		local z = preview or slotZone(selectedSlot)
+		local zi = z > 0 and infoOf(z)
+		if not zi then
+			infoIcon.Text = "💡"
+			infoLine1.Text = string.format("Tap a gem below to put it in Slot %d", selectedSlot)
+			infoLine2.Text = ""
+		else
+			local level = attr("AugGearZ_" .. z) or 0
+			local aw = attr("AugAwakeZ_" .. z) == true and Config.AugAwaken[Config.Sets.ZoneAug[z]]
+			infoIcon.Text = zi.Icon
+			infoLine1.Text = string.format("<b>%s</b>  <font color='#d8cce8'>%s</font>", zi.Name, zi.Desc or "")
+			if aw then
+				infoLine2.Text = "<font color='#ff9be6'>" .. string.format("👑 Awakening: %s", aw.Name) .. "</font>  " .. aw.Desc
+			elseif level <= 0 then
+				infoLine2.Text = isDefense(z) and "Collect Guard Stones" or "Wear 2 set pieces"
+			elseif preview then
+				infoLine2.Text = string.format("Tap or click to put it in Slot %d", selectedSlot)
+			elseif not isDefense(z) then
+				infoLine2.Text = "<font color='#9a8ab8'>" .. "6 pieces 👑 awakening" .. "</font>"
+			else
+				infoLine2.Text = ""
 			end
 		end
 	end
@@ -259,31 +292,7 @@ function UI.Build(panel)
 				s.UpStroke.Color = ok and Color3.fromRGB(184, 255, 191) or Color3.fromRGB(120, 110, 140)
 			end
 		end
-		-- 설명 줄
-		if preview and inSlot(preview) then preview = nil end
-		local z = preview or slotZone(selectedSlot)
-		local zi = z > 0 and infoOf(z)
-		if not zi then
-			infoIcon.Text = "💡"
-			infoLine1.Text = string.format("Tap a gem below to put it in Slot %d", selectedSlot)
-			infoLine2.Text = ""
-		else
-			local level = attr("AugGearZ_" .. z) or 0
-			local aw = attr("AugAwakeZ_" .. z) == true and Config.AugAwaken[Config.Sets.ZoneAug[z]]
-			infoIcon.Text = zi.Icon
-			infoLine1.Text = string.format("<b>%s</b>  <font color='#d8cce8'>%s</font>", zi.Name, zi.Desc or "")
-			if aw then
-				infoLine2.Text = "<font color='#ff9be6'>" .. string.format("👑 Awakening: %s", aw.Name) .. "</font>  " .. aw.Desc
-			elseif level <= 0 then
-				infoLine2.Text = isDefense(z) and "Collect Guard Stones" or "Wear 2 set pieces"
-			elseif preview then
-				infoLine2.Text = string.format("Tap or click to put it in Slot %d", selectedSlot)
-			elseif not isDefense(z) then
-				infoLine2.Text = "<font color='#9a8ab8'>" .. "6 pieces 👑 awakening" .. "</font>"
-			else
-				infoLine2.Text = ""
-			end
-		end
+		refreshInfo()
 		-- 후보 보석
 		local locked = {}
 		for key, r in pairs(rows) do
