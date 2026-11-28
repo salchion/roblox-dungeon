@@ -647,6 +647,48 @@ function Inventory.EquipSet(player, setKey)
 	return changed
 end
 
+-- 🌟 세트 효과 칸 "보석 한 번 누르기" (AugService "Wear"): 이 세트의 가장 좋은 조각을 3부위까지(Lv6) 낀다.
+--   나머지 부위는 그대로 두고, 다른 칸에 든 세트(keepSets)의 조각이 있는 부위는 되도록 건드리지 않는다 (EquipSet 처럼 나머지를 점수순으로 갈아 끼우지 않는다)
+--   반환: 바뀐 부위 수, 실패 이유
+function Inventory.EquipSetKeep(player, setKey, keepSets)
+	local state = states[player]
+	if not state then return 0, "Try again in a moment." end
+	if player:GetAttribute("Zone") == "Dungeon" then return 0, "You can't change gear in the dungeon." end
+	if not Config.Sets[setKey] then return 0, "Unknown set." end
+	local best = {}
+	for id, item in pairs(state.Items) do
+		if item.Set == setKey then
+			local score = Config.GetItemScore(item)
+			if not best[item.Slot] or score > best[item.Slot].Score then best[item.Slot] = { Id = id, Score = score, Slot = item.Slot } end
+		end
+	end
+	local picks = {}
+	for _, pick in pairs(best) do
+		local worn = state.Items[state.Equipped[pick.Slot] or -1]
+		pick.Keep = worn and worn.Set and keepSets[worn.Set] and worn.Set ~= setKey -- (다른 칸 세트가 쓰는 부위)
+		table.insert(picks, pick)
+	end
+	if #picks < 2 then return 0, string.format("Need 2+ pieces of %s (you have %d)", Config.Sets[setKey].Name, #picks) end
+	table.sort(picks, function(a, b)
+		if (a.Keep and 1 or 0) ~= (b.Keep and 1 or 0) then return not a.Keep end
+		return a.Score > b.Score
+	end)
+	local changed = 0
+	for i = 1, math.min(3, #picks) do
+		local pick = picks[i]
+		if state.Equipped[pick.Slot] ~= pick.Id then
+			state.Equipped[pick.Slot] = pick.Id
+			changed += 1
+		end
+	end
+	if changed > 0 then
+		powerCause(player, "세트 장착")
+		applyEquipAttributes(player, state)
+		Inventory.Push(player)
+	end
+	return changed
+end
+
 function Inventory.Scrap(player, id)
 	local state = states[player]
 	local item = state and state.Items[id]

@@ -296,6 +296,31 @@ Remotes.Aug.OnServerEvent:Connect(function(player, action, a, b)
 			for k = 1, S.Count do if rift.AugSlot[k] == z then rift.AugSlot[k] = 0 end end
 		end
 		rift.AugSlot[i] = z
+	elseif action == "Wear" then -- 👕 아직 못 넣는 공격 효과(레벨 0)의 보석을 누름: 그 세트의 가장 좋은 조각을 끼우고(3부위까지) 칸 a 에 넣는다
+		local i, z = tonumber(a), tonumber(b)
+		if not i or not z then return end
+		i, z = math.floor(i), math.floor(z)
+		if i < 1 or i > S.Count or z < 1 or z > ZONES or isDefense(z) or not isOpen(player, rift, z) then return end
+		local key = Config.Sets.ZoneKeys[z]
+		local Inventory = inventory()
+		if not key or not Inventory or not Inventory.EquipSetKeep then return end
+		migrate(player, rift)
+		rift.AugSlot = rift.AugSlot or { 0, 0, 0 }
+		local keep = {} -- (다른 칸에 든 공격 세트의 조각은 되도록 그대로)
+		for k = 1, S.Count do
+			local other = tonumber(rift.AugSlot[k]) or 0
+			if k ~= i and other > 0 and not isDefense(other) and Config.Sets.ZoneKeys[other] then keep[Config.Sets.ZoneKeys[other]] = true end
+		end
+		local changed, reason = Inventory.EquipSetKeep(player, key, keep)
+		if reason then notify(player, "⚠ " .. reason) return end
+		local totals = Inventory.GetTotals(player)
+		local levels = levelsOf(rift, totals.AugBoost or {}, totals.SetCounts or {})
+		if (levels[z] or 0) > 0 then
+			for k = 1, S.Count do if rift.AugSlot[k] == z then rift.AugSlot[k] = 0 end end
+			rift.AugSlot[i] = z
+			local info = Config.AugInfo[Config.Sets.ZoneAug[z]]
+			notify(player, string.format("👕 %s set equipped (%d slot(s) changed) → %s %s in slot %d", Config.Sets[key].Name, changed, info.Icon, info.Name, i))
+		end
 	elseif action == "SlotUp" then -- 🔨 칸 강화 (칸 자체 고정 골드표)
 		local i = tonumber(a)
 		if not i then return end

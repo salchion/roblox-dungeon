@@ -4,6 +4,10 @@ return {
 	exact = {
 	},
 	templates = {
+		{ "💰 Not enough gold. ({number1} needed) Earn gold from field hunting, dungeons, the Boss Rush, or idle income", "💰 ゴールドが足りません。({number1}必要) フィールド狩り・ダンジョン・ボスラッシュ・放置収入でゴールドを集めよう" },
+		{ "Zone {number1} · Forest\n🏰 Forest Castle Gate · Rec. ⚡{number2}\nDanger ☠☠\n🌲 New set from here: Forest's Blessing Set", "ゾーン {number1} ・森\n🏰 森の城の門 · 推奨レベル ⚡{number2}\n危険 ☠☠\n🌲 ここから新しいセット：森の祝福セット" },
+		{ "Zone {number1} · Snowfield\n❄ Ice Palace Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠\n❄ New set from here: Frost's Breath Set", "ゾーン {number1} ・雪原\n❄ アイスパレスの門 · レコメンド ⚡{number2}\n危険 ☠☠☠☠☠\n❄ ここから新しいセット：フロストの呼吸セット" },
+		{ "enemies below {number1}% HP are executed · bosses take up to +{number2}% damage (all your damage) as their HP drops", "HPが{number1}%未満の敵は処刑され、ボスはHPが減るほど最大+{number2}%のダメージ(あなたの全ダメージ)を受けます" },
 		{ "Zone {number1} · Desert\n🏜 Desert Temple Entrance · Rec. ⚡{number2}\nDanger ☠☠☠☠\n🏜 New set from here: Desert Sun Set", "ゾーン {number1} ・砂漠\n🏜 砂漠の神殿の入り口 · 推奨レベル ⚡{number2}\n危険 ☠☠☠☠\n🏜 ここから新しいセット：砂漠の太陽セット" },
 		{ "🏔 Hunting Field\n{number1} Meadow · {number2} Forest\n{number3} Wasteland · {number4} Desert\n{number5} Snowfield · {number6} Volcano\n{number7} Darklands · {number8} Abyss", "🏔 狩猟フィールド\n{number1} 牧草地 · {number2} 森\n{number3} 荒地 · {number4} 砂漠\n{number5} 雪原 · {number6} 火山\n{number7} ダークランド · {number8} アビス" },
 		{ "Zone {number1} · Darklands\n🦇 Dark Castle Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠☠\n🦇 New set from here: Dark Pact Set", "ゾーン {number1} ・ダークランド\n🦇 ダークキャッスルゲート · 推奨レベル ⚡{number2}\n危険 ☠☠☠☠☠☠☠\n🦇 ここから新しいセット：ダークパクトセット" },
@@ -831,6 +835,7 @@ return {
 		{ "Bosses {number1} · Damage {text2} · Next boss {number3}s", "ボス {number1} · ダメージ {text2} · 次のボスまで {number3}秒" },
 		{ "⚔ A skill upgrade is ready ({text1} G)", "⚔ スキル強化ができます（{text1} G）" },
 		{ "Move speed +{text1} per point  (max {number2})", "1ポイントごとに移動速度+{text1}(最大{number2})" },
+		{ "Need 2+ pieces of {text1} (you have {number1})", "{text1}が2部位以上必要です（所持 {number1}）" },
 		{ "{text1}: vs bosses {number2}% · vs monsters {number3}%", "{text1}: ボス戦 {number2}% · モンスター戦 {number3}%" },
 		{ "📅 {number1}-day login streak! Reward: {text2}", "📅 {number1}日連続ログイン！報酬: {text2}" },
 		{ "✅ Mission complete! Reward: {text1}", "✅ ミッション完了！報酬: {text1}" },
@@ -982,12 +987,5 @@ return {
 		{ "{text1} {text2} (defense) also unlocked! Level it up with 🔷 Guard Stones in town, then put it in a slot (Y key)", "{text1} {text2}（防御）も解放！町で🔷守護石で強化して枠に入れよう（Yキー）" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Equip its set gear to turn it on, or upgrade it with gold (Y key)", "{text1} セット効果『{text2}』解放! セット装備を着ければ自動でオン、ゴールドで強化もできます (Yキー)" },
 		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear, then put it in a slot (Y key)", "{text1} セット効果『{text2}』解放！そのセット装備を2部位以上つけて枠に入れよう（Yキー）" },
-		{ "{text1} Set effect 『{text2}』 unlocked! Wear 2+ pieces of its set gear to turn it on (Y key)", "{text1} セット効果『{text2}』解放！そのセット装備を2部位以上つけるとON（Yキー）" },
-		{ "{text1} · {text2} · Fail if monsters pile up! Survive to the end and the boss appears", "{text1} · {text2} · モンスターが溜まると失敗！最後まで生き残るとボスが登場します" },
-		{ "{text1} Set effect 『{text2}』 unlocked! Activate it with gold (Y key / ✨ Set button)", "{text1} セット効果『{text2}』を解放しました！ゴールドで有効化しよう(Yキー / ✨セットボタン)" },
-		{ "🧩 Equip this {text1} → <b>{text2} {number3}/3</b>: set bonus ON (and its set effect)", "🧩 この{text1}を装備 → <b>{text2} {number3}/3</b>: セットボーナスON (セット効果も)" },
-		{ "🎉 Evolved to {text1}! Your weapon look and bullet color changed{text2}", "🎉 {text1}に進化しました！武器の見た目と弾の色が変わりました{text2}" },
-		{ "⏳ {text1} upgrade started! ({text2}) — use Time Skip to finish sooner", "⏳ {text1}の強化を開始！({text2}) — 時間短縮で早く終わらせられます" },
-		{ "All-time best {text1} pts · most bosses {number2} · longest {text3}", "歴代最高 {text1}点 · 最多ボス{number2}体 · 最長 {text3}" },
 	},
 }

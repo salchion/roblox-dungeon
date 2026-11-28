@@ -1211,6 +1211,13 @@ return {
 		["1. Defeat a zone's Lord → its effect unlocks   2. Wear 2+ set pieces and put it in a slot (Y)   3. It fires on its own in combat"] = "1. エリアの君主を倒す → 効果が解放   2. セット2部位以上をつけて枠に入れる（Y）   3. 戦闘中に自動で発動",
 		["🎯 DEADEYE 🎯"] = "🎯 デッドアイ 🎯",
 		["🌙 Night has fallen - watch your sight"] = "🌙 夜が降ってきました - 視界に注意してください",
+		["Tap: wear your best pieces of this set and put it in the slot"] = "タップ：このセットの一番良い装備をつけて枠に入れる",
+		["Cancel attacks"] = "攻撃キャンセル",
+		["Windows"] = "ウィンドウ",
+		["WASD move · Q dash · Mouse click (hold for rapid fire) to attack · Space jump"] = "WASDで移動 · Qでダッシュ · クリックで攻撃（長押しで連射） · Spaceでジャンプ",
+		["Hit an enemy charging up with F (Blade Bloom): that attack is canceled and your hit deals x2 damage"] = "力をためている敵にF（ブレードブルーム）を当てると攻撃がキャンセルされ、ダメージ2倍",
+		["Y Set effects · T Stat points · P Pets · J Codex · H Settings / Help (this window) · B Menu"] = "Y セット効果 · T ステータス · P ペット · J 図鑑 · H 設定／ヘルプ（この画面） · B メニュー",
+		["F Blade Bloom (main skill: 4 daggers spin and fly at nearby enemies) · C First Aid · V Deadeye (gauge 100% from hitting enemies)  — field/dungeons only"] = "F ブレードブルーム（メイン：4本の短剣が回転して近くの敵へ） · C 応急手当 · V デッドアイ（敵に当ててゲージ100%）  — フィールド／ダンジョンのみ",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 デイリークエスト\n{number1}のダンジョンをクリア ✅ タップして獲得しよう！\n{number2}回のアップグレードに成功 ✅ タップして受け取る！\n{number3}ステータスポイント（Tキー/ステータスボタン）を消費 ✅ タップして獲得！\nペットウィンドウを開く（Pキー/成長>ペット）✅タップして受け取る！" },
@@ -1240,9 +1247,5 @@ return {
 		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Spell Tome · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 レベル{number1} {number2} / {number3} XP\n💰 {number4} G 🎫 {number5}\n🔑{number6}（本日無料 {number7}/{number8}）\n⚡ パワー {number9}\n⚔ スペル・トーム · 錆の時代 +{number10}\n📍 フィールド（ベスト：ゾーン{number11}）" },
 		{ "Zone {number1} · Abyss\n🌀 Gate of the Abyss · Rec. ⚡{number2}\nDanger ☠☠☠☠☠☠☠☠\n🌀 New set from here: Abyss Dominion Set", "ゾーン {number1} · 深淵\n🌀 深淵の門 · レコード ⚡{number2}\n危険 ☠☠☠☠☠☠☠☠\n🌀 ここからの新しいセット：アビスドミニオンセット" },
 		{ "⚠ The {number1}-hour cap was reached, so {number2} hours' worth couldn't be saved. You can raise the cap in the Shop", "⚠ {number1}時間の上限に達したため、{number2}時間分は保存できませんでした。上限はショップで増やせます" },
-		{ "💰 Not enough gold. ({number1} needed) Earn gold from field hunting, dungeons, the Boss Rush, or idle income", "💰 ゴールドが足りません。({number1}必要) フィールド狩り・ダンジョン・ボスラッシュ・放置収入でゴールドを集めよう" },
-		{ "Zone {number1} · Forest\n🏰 Forest Castle Gate · Rec. ⚡{number2}\nDanger ☠☠\n🌲 New set from here: Forest's Blessing Set", "ゾーン {number1} ・森\n🏰 森の城の門 · 推奨レベル ⚡{number2}\n危険 ☠☠\n🌲 ここから新しいセット：森の祝福セット" },
-		{ "Zone {number1} · Snowfield\n❄ Ice Palace Gate · Rec. ⚡{number2}\nDanger ☠☠☠☠☠\n❄ New set from here: Frost's Breath Set", "ゾーン {number1} ・雪原\n❄ アイスパレスの門 · レコメンド ⚡{number2}\n危険 ☠☠☠☠☠\n❄ ここから新しいセット：フロストの呼吸セット" },
-		{ "enemies below {number1}% HP are executed · bosses take up to +{number2}% damage (all your damage) as their HP drops", "HPが{number1}%未満の敵は処刑され、ボスはHPが減るほど最大+{number2}%のダメージ(あなたの全ダメージ)を受けます" },
 	},
 }

@@ -1350,6 +1350,13 @@ return {
 		["1. Defeat a zone's Lord → its effect unlocks   2. Wear 2+ set pieces and put it in a slot (Y)   3. It fires on its own in combat"] = "1. 구역 군주를 잡으면 → 효과가 열림   2. 세트 2부위 이상 끼고 칸에 넣기 (Y)   3. 전투 중 알아서 발동",
 		["🎯 DEADEYE 🎯"] = "🎯 데드아이 🎯",
 		["🌙 Night has fallen - watch your sight"] = "🌙 밤이 찾아왔습니다 - 시야를 조심하세요",
+		["Tap: wear your best pieces of this set and put it in the slot"] = "누르면: 이 세트의 가장 좋은 장비를 끼우고 칸에 넣어요",
+		["Cancel attacks"] = "공격 끊기",
+		["Windows"] = "창",
+		["WASD move · Q dash · Mouse click (hold for rapid fire) to attack · Space jump"] = "WASD 이동 · Q 대시 · 마우스 클릭 공격 (누르고 있으면 연사) · Space 점프",
+		["Hit an enemy charging up with F (Blade Bloom): that attack is canceled and your hit deals x2 damage"] = "기 모으는 적에게 F(블레이드 블룸)를 맞히면 그 공격이 끊기고 피해 2배",
+		["Y Set effects · T Stat points · P Pets · J Codex · H Settings / Help (this window) · B Menu"] = "Y 세트 효과 · T 스탯 포인트 · P 펫 · J 도감 · H 설정 / 도움말 (이 창) · B 메뉴",
+		["F Blade Bloom (main skill: 4 daggers spin and fly at nearby enemies) · C First Aid · V Deadeye (gauge 100% from hitting enemies)  — field/dungeons only"] = "F 블레이드 블룸 (주 스킬: 단검 4개가 돌며 근처 적에게) · C 응급 처치 · V 데드아이 (적을 맞혀 게이지 100%)  — 필드/던전 전용",
 	},
 	templates = {
 		{ "📋 Daily Quests\nClear {number1} dungeon(s)  ✅ tap to claim!\nSucceed at upgrading {number2} times  ✅ tap to claim!\nSpend {number3} stat points (T key / Stats button)  ✅ tap to claim!\nOpen the pet window (P key / Growth > Pet)  ✅ tap to claim!", "📋 일일 퀘스트\n{number1}개의 던전을 클리어하세요 ✅ 탭하여 보상을 받으세요!\n{number2}번 업그레이드 성공 ✅ 탭하여 획득하세요!\n{number3} 스탯 포인트 사용 (T 키 / 스탯 버튼) ✅ 탭하여 획득하세요!\n펫 창 열기 (P 키 / 성장 > 펫) ✅ 클릭하여 획득하세요!" },
@@ -1369,8 +1376,5 @@ return {
 		{ "🔒 Zone {number1} · Desert Sealed\nZone {number2} monsters {number3} / {number4} defeated · Lord 👑 Not defeated\nOpen to earn the 🏜 Desert Sun set!", "🔒 구역 {number1} · 사막 봉쇄됨\n구역 {number2} 몬스터 {number3} / {number4} 처치 · 군주 👑 미처치\n열고 사막 태양 세트를 획득하세요!" },
 		{ "💰 Not enough Gold. ({number1} needed) Earn Gold at the Training Dummy / field hunting / dungeons / Boss Rush rewards", "💰 골드가 부족해요. ({number1} 필요) 훈련 허수아비 / 필드 사냥 / 던전 / 보스 러시 보상으로 골드를 얻으세요" },
 		{ "Legend Wielder   Title 『Legend Wielder』\nReach weapon upgrade level {number1} (about the {number2}th weapon)\n{number3} / {number4}   Reward: 🎫 {number5}", "전설의 보유자 타이틀 『전설의 보유자』\n무기 업그레이드 레벨 {number1} 달성 ({number2}번째 무기)\n{number3} / {number4}   보상: 🎫 {number5}" },
-		{ "Tier rewards by total damage dealt (gold · tickets · time skip):\n🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+", "총 피해량에 따른 티어 보상 (골드 · 티켓 · 시간 건너뛰기):\n🥉 {number1}+   🥈 {number2}M+   🥇 {number3}M+   💠 {number4}M+   💎 {number5}M+   👑 {number6}M+" },
-		{ "Zone {number1} · Wasteland\n🏚 Ruined Fortress Gate · Rec. ⚡{number2}\nDanger ☠☠☠\n🏚 New set from here: Will of the Ruins Set", "구역 {number1} · 황무지\n🏚 파괴된 요새 문 · 레벨 {number2}\n위험 ☠☠☠\n🏚 여기서 새로운 세트: 폐허의 의지 세트" },
-		{ "🎖 Lv.{number1}  {number2} / {number3} XP\n💰 {number4} G   🎫 {number5}\n🔑{number6} (Free today {number7}/{number8})\n⚡ Power {number9}\n⚔ Rocket Launcher · Rusty Era +{number10}\n📍 Field (best: Zone {number11})", "🎖 레벨 {number1} {number2} / {number3} 경험치\n💰 {number4} G 🎫 {number5}\n🔑{number6} (오늘 무료 {number7}/{number8})\n⚡ 파워 {number9}\n⚔ 로켓 발사기 · 녹슨 시대 +{number10}\n📍 필드 (최적: 구역 {number11})" },
 	},
 }

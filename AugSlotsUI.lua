@@ -181,7 +181,11 @@ function UI.Build(panel)
 		gemStrokes[z] = { Stroke = stroke, Base = stroke.Color }
 		hit.Activated:Connect(function() -- (11-28) 폰 / PC 모두 한 번 누르면 바로 고른 칸에. 못 넣는 효과(레벨 0)는 설명만 보여 준다
 			preview = z
-			if level > 0 then Remotes.Aug:FireServer("Slot", selectedSlot, z) end -- (들어가면 서버 속성이 바뀌어 전체 Refresh 가 따로 돈다: 그때 설명 줄은 칸에 든 그 효과)
+			if level > 0 then
+				Remotes.Aug:FireServer("Slot", selectedSlot, z)
+			elseif not def and attr("AugOpenZ_" .. z) == true then -- (아직 못 넣는 공격 효과: 그 세트 가장 좋은 조각을 끼우고 바로 칸에. 조각이 2개 안 되면 서버가 알려 준다)
+				Remotes.Aug:FireServer("Wear", selectedSlot, z)
+			end -- (들어가면 서버 속성이 바뀌어 전체 Refresh 가 따로 돈다: 그때 설명 줄은 칸에 든 그 효과)
 			refreshInfo()
 		end)
 		if hoverPreview then -- (PC 만: 폰은 탭 시작 때 MouseEnter 가 먼저 와서, 여기서 다시 그리면 누르고 있는 버튼이 지워져 Activated 가 안 왔다)
@@ -219,7 +223,7 @@ function UI.Build(panel)
 			if aw then
 				infoLine2.Text = "<font color='#ff9be6'>" .. string.format("👑 Awakening: %s", aw.Name) .. "</font>  " .. aw.Desc
 			elseif level <= 0 then
-				infoLine2.Text = isDefense(z) and "Collect Guard Stones" or "Wear 2 set pieces"
+				infoLine2.Text = isDefense(z) and "Collect Guard Stones" or "Tap: wear your best pieces of this set and put it in the slot"
 			elseif preview then
 				infoLine2.Text = string.format("Tap or click to put it in Slot %d", selectedSlot)
 			elseif not isDefense(z) then
